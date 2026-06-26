@@ -1,0 +1,52 @@
+<div class="{% if not comment.parent %}mb-4 p-4 bg-white border rounded shadow-sm{% else %}mt-3{% endif %}">
+    <div class="d-flex w-100 justify-content-between">
+        <h6 class="mb-1" {% if comment.parent %}style="font-size: 0.9em;"{% endif %}>
+            {{ comment.author.profile_icon }} 
+            <a href="{% url 'users:public_profile' comment.author.username %}" class="fw-bold text-decoration-none text-dark">
+                @{{ comment.author.username }}
+            </a>
+            {% if comment.author.is_staff %}
+                <span class="badge bg-warning text-dark ms-1" {% if comment.parent %}style="font-size: 0.75em;"{% endif %}>Curator</span>
+            {% endif %}
+        </h6>
+        <small class="text-muted" {% if comment.parent %}style="font-size: 0.8em;"{% endif %}>{{ comment.created_at|date:"d M Y, H:i" }}</small>
+    </div>
+    <p class="mb-2 mt-2" {% if comment.parent %}style="font-size: 0.95em;"{% endif %}>{{ comment.text|linebreaksbr }}</p>
+    
+    <div class="d-flex gap-3">
+        {% if user.is_authenticated %}
+            <button class="btn btn-text text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#replyForm{{ comment.id }}" aria-expanded="false" aria-controls="replyForm{{ comment.id }}">
+                ↩️ Reply
+            </button>
+        {% endif %}
+        {% if user.is_staff or user.is_superuser or user == comment.author %}
+            <form action="{% url 'music:comment_delete' comment.pk %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-text text-danger" title="Delete Comment">
+                    🗑️ Delete
+                </button>
+            </form>
+        {% endif %}
+    </div>
+    
+    <!-- Form Risposta -->
+    {% if user.is_authenticated %}
+    <div class="collapse mt-2" id="replyForm{{ comment.id }}">
+        <form method="post" action="{% url 'music:song_detail' song.pk %}" class="d-flex gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            <textarea name="text" class="form-control form-control-sm" rows="1" placeholder="Reply to @{{ comment.author.username }}..." required></textarea>
+            <button type="submit" class="btn btn-sm btn-primary">Reply</button>
+        </form>
+    </div>
+    {% endif %}
+    
+    <!-- Risposte Ricorsive -->
+    {% if comment.replies.all %}
+        <div class="ms-3 ps-3 border-start border-2 border-secondary" style="margin-top: 0.5rem;">
+            {% for child_comment in comment.replies.all %}
+                {% include 'music/comment_node.html' with comment=child_comment %}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

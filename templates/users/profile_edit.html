@@ -1,26 +1,22 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Modifica Profilo — Music Streaming{% endblock %}
+{% block title %}Edit Profile — Music Streaming{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">✏️ Modifica Profilo</h4>
-            </div>
+        <div class="card neo-card">
             <div class="card-body p-4">
+                <h2 class="card-title mb-3" style="color: var(--accent-tertiary);">✏️ Edit Personal Details</h2>
+                <p class="text-muted mb-4">Update your basic information.</p>
+                
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-primary w-100">
-                            Salva Modifiche
-                        </button>
-                        <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary w-100 mt-2">
-                            Annulla
-                        </a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
                     </div>
                 </form>
             </div>

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if object %}Edit Genre{% else %}Add Genre{% endif %} — Curator Tools{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card neo-card">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4" style="color: var(--accent-tertiary);">
+                    {% if object %}✏️ Edit Genre{% else %}➕ Create New Genre{% endif %}
+                </h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Save Genre</button>
+                        <a href="{% url 'music:genre_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

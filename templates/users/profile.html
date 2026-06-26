@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Profilo di {{ user.username }} — Music Streaming{% endblock %}
+{% block title %}Profile of {{ user.username }} — Music Streaming{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
 
-        <div class="card shadow mb-4">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">👤 Il tuo Profilo Personale</h4>
+        <div class="card neo-card mb-4">
+            <div class="card-header border-bottom bg-transparent d-flex justify-content-between align-items-center">
+                <h4 class="mb-0" style="color: var(--accent-tertiary);">👤 Your Personal Profile</h4>
             </div>
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -30,58 +30,58 @@
                 <ul class="list-group list-group-flush mb-4">
                     {% if user.first_name or user.last_name %}
                     <li class="list-group-item">
-                        <strong>Nome e Cognome:</strong> {{ user.first_name }} {{ user.last_name }}
+                        <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
                     </li>
                     {% endif %}
                     {% if user.birth_date %}
                     <li class="list-group-item">
-                        <strong>Data di Nascita:</strong> {{ user.birth_date|date:"d M Y" }}
+                        <strong>Date of Birth:</strong> {{ user.birth_date|date:"M d, Y" }}
                     </li>
                     {% endif %}
                     <li class="list-group-item">
-                        <strong>Ruolo:</strong> {{ user.get_role_display|default:user.role }}
+                        <strong>Role:</strong> {{ user.get_role_display|default:user.role }}
                     </li>
                     <li class="list-group-item">
-                        <strong>Data di iscrizione:</strong> {{ user.date_joined|date:"d M Y" }}
+                        <strong>Date Joined:</strong> {{ user.date_joined|date:"M d, Y" }}
                     </li>
                     <li class="list-group-item">
-                        <strong>Ultimo accesso:</strong> {{ user.last_login|date:"d M Y, H:i"|default:"Mai" }}
+                        <strong>Last Login:</strong> {{ user.last_login|date:"M d, Y, H:i"|default:"Never" }}
                     </li>
                     <li class="list-group-item">
-                        <strong>Playlist create:</strong> {{ user.playlists.count }}
+                        <strong>Playlists Created:</strong> {{ user.playlists.count }}
                     </li>
                 </ul>
 
                 <div class="d-grid gap-2">
                     <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">
-                        ✏️ Modifica Dati Personali
+                        ✏️ Edit Personal Details
                     </a>
                     <a href="{% url 'users:public_profile' request.user.username %}" class="btn btn-outline-primary">
-                        👁️ Vai al mio Profilo Pubblico
+                        👁️ View My Public Profile
                     </a>
                 </div>
             </div>
         </div>
 
         {% if pending_requests %}
-        <div class="card shadow mt-4 border-warning">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0">⏳ Richieste di amicizia ({{ pending_requests.count }})</h5>
+        <div class="card neo-card mt-4 border-warning">
+            <div class="card-header bg-transparent border-bottom border-warning">
+                <h5 class="mb-0 text-warning">⏳ Friend Requests ({{ pending_requests.count }})</h5>
             </div>
             <ul class="list-group list-group-flush">
                 {% for req in pending_requests %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>
-                        <a href="{% url 'users:public_profile' req.sender.username %}" class="text-decoration-none fw-bold">@{{ req.sender.username }}</a> ti ha inviato una richiesta
+                        <a href="{% url 'users:public_profile' req.sender.username %}" class="text-decoration-none fw-bold">@{{ req.sender.username }}</a> sent you a request
                     </span>
                     <div>
                         <form action="{% url 'users:accept_request' req.id %}" method="post" class="d-inline">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-success">Accetta</button>
+                            <button type="submit" class="btn btn-sm btn-success">Accept</button>
                         </form>
                         <form action="{% url 'users:reject_request' req.id %}" method="post" class="d-inline">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger">Rifiuta</button>
+                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
                         </form>
                     </div>
                 </li>
@@ -90,18 +90,18 @@
         </div>
         {% endif %}
 
-        <div class="card shadow mt-4">
-            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">👥 I tuoi Amici ({{ friends_list.count }})</h5>
+        <div class="card neo-card mt-4">
+            <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" style="color: var(--accent-tertiary);">👥 Your Friends ({{ friends_list.count }})</h5>
             </div>
             <div class="card-body">
                 <!-- Form Aggiungi Amico -->
                 <form action="{% url 'users:send_request_by_username' %}" method="post" class="mb-4">
                     {% csrf_token %}
                     <div class="input-group">
-                        <span class="input-group-text bg-white">@</span>
-                        <input type="text" name="username" class="form-control" placeholder="Inserisci il nome utente esatto da aggiungere..." required>
-                        <button type="submit" class="btn btn-primary">➕ Invia Richiesta</button>
+                        <span class="input-group-text bg-transparent text-primary border-primary">@</span>
+                        <input type="text" name="username" class="form-control border-primary" placeholder="Enter exact username to add..." required>
+                        <button type="submit" class="btn btn-primary">➕ Send Request</button>
                     </div>
                 </form>
 
@@ -116,7 +116,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted mb-0">Non hai ancora nessun amico. Cerca qualcuno tramite username o esplora i commenti per aggiungere persone!</p>
+                    <p class="text-muted mb-0">You don't have any friends yet. Search for someone by username or explore the comments to add people!</p>
                 {% endif %}
             </div>
         </div>

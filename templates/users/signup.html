@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Registrazione — Music Streaming{% endblock %}
+{% block title %}Sign Up — Music Streaming{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-        <div class="card shadow">
+        <div class="card neo-card">
+            <div class="card-header bg-transparent border-bottom text-center py-3">
+                <h3 class="mb-0" style="color: var(--accent-tertiary);">Create an Account</h3>
+            </div>
             <div class="card-body p-4">
-                <h2 class="card-title text-center mb-4">📝 Registrazione</h2>
-                <form method="post">
+                <form method="post" action="{% url 'users:signup' %}">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <button type="submit" class="btn btn-success w-100 mt-3">Registrati</button>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Sign Up</button>
+                    </div>
                 </form>
-                <hr>
-                <p class="text-center text-muted mb-0">
-                    Hai già un account?
-                    <a href="{% url 'users:login' %}">Accedi qui</a>
+                <hr class="mt-4">
+                <p class="text-center mb-0">
+                    Already have an account? <a href="{% url 'users:login' %}">Login</a>
                 </p>
             </div>
         </div>

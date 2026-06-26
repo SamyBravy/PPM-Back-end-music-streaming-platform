@@ -12,37 +12,62 @@ class HomePageView(TemplateView):
         user = self.request.user
         
         if user.is_authenticated:
-            # 1. Trova il genere più presente nelle playlist dell'utente
-            top_genre = Genre.objects.filter(
-                songs__playlists__owner=user
-            ).annotate(
-                song_count=Count('songs')
-            ).order_by('-song_count').first()
+            from django.db.models import Q
             
-            if top_genre:
-                # 2. Suggerisci le ultime novità di quel genere, escludendo brani che ha già
-                recommended_list = list(Song.objects.filter(genre=top_genre).exclude(
-                    playlists__owner=user
-                ).order_by('-created_at')[:3])
+            # Trova i brani che piacciono all'utente
+            liked_or_playlist_songs = Song.objects.filter(
+                Q(playlists__owner=user) | Q(likes=user)
+            ).distinct()
+            
+            # 1. Trova il genere più presente
+            top_genre_data = liked_or_playlist_songs.values('genre').annotate(
+                count=Count('id')
+            ).order_by('-count').first()
+            top_genre_id = top_genre_data['genre'] if top_genre_data else None
+
+            # 2. Trova l'artista più presente
+            top_artist_data = liked_or_playlist_songs.values('artist').annotate(
+                count=Count('id')
+            ).order_by('-count').first()
+            top_artist = top_artist_data['artist'] if top_artist_data else None
+            
+            # Base query: exclude songs in playlists and liked songs
+            base_qs = Song.objects.annotate(likes_count=Count('likes')).exclude(
+                playlists__owner=user
+            ).exclude(
+                likes=user
+            )
+            
+            if top_genre_id or top_artist:
+                # 3. Suggerisci novità dello stesso genere o stesso artista
+                q_filters = Q()
+                if top_genre_id:
+                    q_filters |= Q(genre_id=top_genre_id)
+                if top_artist:
+                    q_filters |= Q(artist=top_artist)
+                    
+                recommended_list = list(base_qs.filter(q_filters).order_by('?')[:3])
                 
-                # Se non abbiamo 3 brani di quel genere, riempiamo con altri brani recenti
+                # Se non abbiamo 3 brani, riempiamo con altri
                 if len(recommended_list) < 3:
                     needed = 3 - len(recommended_list)
                     already_ids = [s.id for s in recommended_list]
-                    fallback_songs = Song.objects.exclude(playlists__owner=user).exclude(id__in=already_ids).order_by('-created_at')[:needed]
+                    fallback_songs = base_qs.exclude(id__in=already_ids).order_by('?')[:needed]
                     recommended_list.extend(fallback_songs)
                 
                 recommended = recommended_list
 
-        # 3. Fallback sensato se l'utente è nuovo (nessuna playlist) o non è loggato:
-        # Mostriamo gli ultimi 3 brani aggiunti in assoluto al catalogo
+        # 3. Fallback se l'utente non è loggato o non ha raccomandazioni
         if not recommended or len(recommended) == 0:
             if user.is_authenticated:
-                recommended = Song.objects.exclude(playlists__owner=user).order_by('-created_at')[:3]
+                recommended = Song.objects.annotate(likes_count=Count('likes')).exclude(
+                    playlists__owner=user
+                ).exclude(likes=user).order_by('?')[:3]
             else:
-                recommended = Song.objects.order_by('-created_at')[:3]
-            
+                recommended = Song.objects.annotate(likes_count=Count('likes')).order_by('?')[:3]
+        
         context['recommended_songs'] = recommended
+        context['trending_songs'] = Song.objects.annotate(likes_count=Count('likes')).order_by('-likes_count')[:4]
         if user.is_authenticated:
             context['user_playlists'] = Playlist.objects.filter(owner=user)
         return context

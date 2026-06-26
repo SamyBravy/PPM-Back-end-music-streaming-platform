@@ -1,0 +1,313 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #FDFBF7;
+  --text-primary: #2D3142;
+  --text-secondary: #4F5D75;
+  
+  --accent-primary: #E07A5F;
+  --accent-secondary: #81B29A;
+  --accent-tertiary: #3D405B;
+  
+  --neo-border: 2px solid #2D3142;
+  --neo-shadow: 4px 4px 0px #2D3142;
+  --neo-shadow-hover: 2px 2px 0px #2D3142;
+  
+  --font-main: 'Space Grotesk', sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1E1E24;
+  --text-primary: #FDFBF7;
+  --text-secondary: #A0AAB2;
+  
+  --accent-primary: #E07A5F;
+  --accent-secondary: #81B29A;
+  --accent-tertiary: #E8DAB2; /* Lighter yellow for dark mode */
+  
+  --neo-border: 2px solid #FDFBF7;
+  --neo-shadow: 4px 4px 0px #FDFBF7;
+  --neo-shadow-hover: 2px 2px 0px #FDFBF7;
+}
+
+[data-theme="dark"] .neo-card, [data-theme="dark"] .card {
+  background: #2D3142 !important;
+  color: var(--text-primary) !important;
+}
+[data-theme="dark"] .form-control, [data-theme="dark"] .form-select {
+  background-color: #2D3142 !important;
+  color: var(--text-primary) !important;
+}
+[data-theme="dark"] .form-control::placeholder {
+  color: rgba(253, 251, 247, 0.6) !important;
+}
+[data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus {
+  background-color: #1E1E24 !important;
+  color: var(--text-primary) !important;
+  border-color: var(--accent-primary) !important;
+}
+[data-theme="dark"] .navbar {
+  --bs-navbar-color: var(--text-secondary);
+  --bs-navbar-hover-color: var(--text-primary);
+  --bs-navbar-active-color: var(--text-primary);
+  --bs-navbar-brand-color: var(--accent-primary);
+}
+[data-theme="dark"] .btn-outline-secondary {
+  background-color: transparent;
+}
+[data-theme="dark"] .text-dark {
+  color: var(--text-primary) !important;
+}
+[data-theme="dark"] .text-muted {
+  color: var(--text-secondary) !important;
+}
+[data-theme="dark"] .bg-white {
+  background-color: #2D3142 !important;
+}
+[data-theme="dark"] .bg-light {
+  background-color: rgba(255,255,255,0.05) !important;
+}
+[data-theme="dark"] .alert-light, [data-theme="dark"] .alert-secondary, [data-theme="dark"] .alert-info {
+  background-color: #2D3142 !important;
+  color: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
+}
+[data-theme="dark"] .btn-outline-dark {
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+[data-theme="dark"] .btn-outline-dark:hover {
+  background-color: var(--text-primary);
+  color: #2D3142;
+}
+[data-theme="dark"] .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--text-primary);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.05);
+  --bs-table-striped-color: var(--text-primary);
+  --bs-table-hover-bg: rgba(255, 255, 255, 0.1);
+  --bs-table-hover-color: var(--text-primary);
+  color: var(--text-primary);
+  border-color: rgba(253, 251, 247, 0.2);
+}
+[data-theme="dark"] .table > :not(caption) > * > * {
+  background-color: var(--bs-table-bg);
+  color: var(--bs-table-color);
+}
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: var(--bs-table-striped-bg) !important;
+  color: var(--bs-table-striped-color) !important;
+}
+[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+  background-color: var(--bs-table-hover-bg) !important;
+  color: var(--bs-table-hover-color) !important;
+}
+[data-theme="dark"] a.text-decoration-none.fw-bold {
+  color: var(--text-primary) !important;
+}
+[data-theme="dark"] .dropdown-menu {
+  background-color: #2D3142;
+  border-color: var(--text-primary);
+}
+[data-theme="dark"] .dropdown-item {
+  color: var(--text-primary);
+}
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Neo-Brutalism Classes */
+.neo-card {
+  background: #ffffff !important;
+  border: var(--neo-border) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--neo-shadow);
+  color: var(--text-primary) !important;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.neo-card:hover, .neo-card:focus-within {
+  transform: translate(2px, 2px);
+  box-shadow: var(--neo-shadow-hover);
+  z-index: 10;
+}
+
+/* Typography Enhancements */
+.text-gradient {
+  color: var(--accent-primary) !important;
+}
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
+/* Bootstrap Overrides for Soft Lo-Fi Mode */
+.card {
+  background-color: #ffffff;
+  border: var(--neo-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+.card-header {
+  border-bottom: var(--neo-border);
+  background-color: #ffffff !important;
+  color: var(--text-primary) !important;
+}
+
+.table {
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+.table-dark {
+  background-color: var(--text-primary);
+  color: #fff;
+}
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+  background-color: rgba(61, 64, 91, 0.05);
+}
+
+/* Input Fields */
+.form-control, .form-select {
+  background-color: #ffffff;
+  border: 2px solid var(--text-primary);
+  color: var(--text-primary);
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px rgba(45, 49, 66, 0.2);
+}
+.form-control:focus, .form-select:focus {
+  background-color: #ffffff;
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  box-shadow: 2px 2px 0px var(--accent-primary);
+  outline: none;
+}
+
+.list-group-item {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+/* Animations & Interactions */
+.hover-scale {
+  /* Removed for this aesthetic */
+}
+
+.btn {
+  border-radius: 6px;
+  font-weight: 600;
+  border: 2px solid var(--text-primary);
+  box-shadow: 2px 2px 0px var(--text-primary);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 0px 0px 0px transparent !important;
+}
+
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--text-primary);
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: #fff;
+  border-color: var(--text-primary);
+}
+.btn-primary:hover {
+  background-color: #c7654a;
+  color: #fff;
+}
+
+.btn-success {
+  background-color: var(--accent-secondary);
+  color: #fff;
+  border-color: var(--text-primary);
+}
+.btn-success:hover {
+  background-color: #6ea089;
+  color: #fff;
+}
+
+.btn-outline-primary {
+  color: var(--accent-tertiary);
+  border-color: var(--text-primary);
+  background-color: transparent;
+}
+.btn-outline-primary:hover {
+  background-color: var(--accent-tertiary);
+  color: #fff;
+}
+.btn-outline-danger {
+  border: 2px solid var(--text-primary);
+  color: #d9534f;
+  font-weight: 600;
+}
+.btn-outline-danger:hover {
+  background-color: #d9534f;
+  color: #fff;
+}
+.btn-outline-secondary {
+  border: 2px solid var(--text-primary);
+  color: var(--text-primary);
+  background-color: #f0f0f0;
+}
+.btn-outline-secondary:hover {
+  background-color: var(--text-primary);
+  color: #fff;
+}
+
+/* Minimal Text Buttons (For Comments) */
+.btn-text {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  font-weight: 600;
+  transition: opacity 0.15s ease !important;
+  border-radius: 0 !important;
+}
+
+.btn-text:active, .btn-text:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 0.7;
+}
+
+/* Entrance Animations */
+.fade-in-up {
+  /* Removed heavy animations, just display normally */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-left: var(--neo-border);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border: var(--neo-border);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c7654a;
+}

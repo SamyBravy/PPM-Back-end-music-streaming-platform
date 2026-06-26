@@ -1,25 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Elimina Brano — Music Streaming{% endblock %}
+{% block title %}Delete Song — Music Streaming{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow border-danger">
+        <div class="card neo-card border-danger">
             <div class="card-body p-4 text-center">
-                <h2 class="card-title text-danger mb-3">🗑️ Conferma Eliminazione</h2>
+                <h2 class="card-title text-danger mb-3">🗑️ Confirm Deletion</h2>
                 <p class="lead">
-                    Sei sicuro di voler eliminare il brano
+                    Are you sure you want to delete the song
                     <strong>"{{ object }}"</strong>?
                 </p>
-                <p class="text-muted">Questa azione è irreversibile.</p>
+                <p class="text-muted">This action is irreversible.</p>
                 <form method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">
-                        Sì, Elimina
+                        Yes, Delete
                     </button>
                     <a href="{% url 'music:song_list' %}" class="btn btn-outline-secondary ms-2">
-                        Annulla
+                        Cancel
                     </a>
                 </form>
             </div>

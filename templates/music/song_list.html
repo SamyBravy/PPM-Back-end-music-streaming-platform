@@ -1,88 +1,110 @@
 {% extends 'base_music.html' %}
+{% load music_extras %}
 
-{% block title %}Catalogo Brani — Music Streaming{% endblock %}
+{% block title %}Music Catalog — Music Streaming{% endblock %}
 
 {% block music_content %}
 <div class="d-flex justify-content-between align-items-center">
-    <h2>🎶 Catalogo Brani</h2>
+    <h2>🎶 Music Catalog</h2>
     {% if user.is_staff %}
-        <a href="{% url 'music:song_create' %}" class="btn btn-success">+ Aggiungi Brano</a>
+        <div class="d-flex gap-2">
+            <a href="{% url 'music:genre_list' %}" class="btn btn-outline-secondary">🎛️ Manage Genres</a>
+            <a href="{% url 'music:song_create' %}" class="btn btn-success">+ Add Song</a>
+        </div>
     {% endif %}
 </div>
 <hr>
 
 <!-- Barra di Ricerca e Filtri -->
-<form method="get" class="row g-2 mb-4">
-    <div class="col-md-5">
-        <input type="text" name="q" class="form-control" placeholder="Cerca per titolo o artista..." value="{{ current_q }}">
+<div class="neo-card p-3 mb-4">
+    <form method="get" class="row g-2">
+        <div class="col-md-5">
+            <input type="text" name="q" class="form-control" placeholder="Search by title or artist..." value="{{ current_q }}">
+        </div>
+        <div class="col-md-4">
+            <select name="genre" class="form-select">
+                <option value="">All genres</option>
+                {% for genre in genres %}
+                    <option value="{{ genre.id }}" {% if current_genre == genre.id|stringformat:"s" %}selected{% endif %}>
+                        {{ genre.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3 d-flex">
+            <button type="submit" class="btn btn-primary w-100 me-2">Search</button>
+            <a href="{% url 'music:song_list' %}" class="btn btn-outline-secondary w-100">Reset</a>
+        </div>
+    </form>
+</div>
+
+{% if current_genre_obj and current_genre_obj.description %}
+    <div class="alert alert-secondary mt-2 mb-4 neo-card bg-transparent">
+        <h5 style="color: var(--accent-tertiary);">About {{ current_genre_obj.name }}</h5>
+        <p class="mb-0">{{ current_genre_obj.description }}</p>
     </div>
-    <div class="col-md-4">
-        <select name="genre" class="form-select">
-            <option value="">Tutti i generi</option>
-            {% for genre in genres %}
-                <option value="{{ genre.id }}" {% if current_genre == genre.id|stringformat:"s" %}selected{% endif %}>
-                    {{ genre.name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-md-3 d-flex">
-        <button type="submit" class="btn btn-primary w-100 me-2">Cerca</button>
-        <a href="{% url 'music:song_list' %}" class="btn btn-outline-secondary w-100">Reset</a>
-    </div>
-</form>
+{% endif %}
 
 {% if song_list %}
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Titolo</th>
-                    <th>Artista</th>
-                    <th>Genere</th>
-                    <th>Durata</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for song in song_list %}
-                <tr>
-                    <td>
-                        <a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none fw-bold">
-                            {{ song.title }}
-                        </a>
-                    </td>
-                    <td>{{ song.artist }}</td>
-                    <td>{{ song.genre }}</td>
-                    <td>{{ song.duration }}</td>
-                    <td>
-                        <div class="dropdown d-inline">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                Aggiungi a...
-                            </button>
-                            <ul class="dropdown-menu">
-                                {% for pl in user.playlists.all %}
-                                <li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id pl.id %}">{{ pl.name }}</a></li>
-                                {% empty %}
-                                <li><span class="dropdown-item text-muted">Nessuna playlist</span></li>
-                                {% endfor %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item fw-bold text-success" href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">➕ Crea nuova</a></li>
-                            </ul>
-                        </div>
-                        {% if user.is_staff %}
-                            <a href="{% url 'music:song_update' song.pk %}" class="btn btn-sm btn-outline-primary ms-1">Modifica</a>
-                            <a href="{% url 'music:song_delete' song.pk %}" class="btn btn-sm btn-outline-danger ms-1">Elimina</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="neo-card">
+        <div class="table-responsive" style="overflow: visible;">
+            <table class="table table-striped table-hover mb-0 align-middle text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Artist</th>
+                        <th>Genre</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for song in song_list %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none fw-bold" style="color: var(--accent-tertiary);">
+                                {{ song.title }}
+                            </a>
+                        </td>
+                        <td>{{ song.artist }}</td>
+                        <td>{{ song.genre }}</td>
+                        <td>{{ song.duration }}</td>
+                        <td>
+                            <a href="{% url 'music:toggle_like_song' song.pk %}" class="btn btn-sm text-decoration-none p-0 me-2 fs-5" title="Like">
+                                {% if user in song.likes.all %}❤️{% else %}🤍{% endif %}
+                            </a>
+                            <div class="dropdown d-inline">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Add to...
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% with av_playlists=user|available_playlists:song %}
+                                        {% for pl in av_playlists %}
+                                            <li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id pl.id %}">{{ pl.name }}</a></li>
+                                            {% if forloop.last %}
+                                                <li><hr class="dropdown-divider"></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <li><a class="dropdown-item fw-bold" style="color: var(--accent-primary);" href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">➕ Create new</a></li>
+                                    {% endwith %}
+                                </ul>
+                            </div>
+                            {% if user.is_staff %}
+                                <a href="{% url 'music:song_update' song.pk %}" class="btn btn-sm btn-outline-primary ms-1">Edit</a>
+                                <a href="{% url 'music:song_delete' song.pk %}" class="btn btn-sm btn-outline-danger ms-1">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% else %}
     <div class="alert alert-info">
-        Nessun brano presente nel catalogo. Torna più tardi!
+        No songs in the catalog yet. Come back later!
     </div>
 {% endif %}
 {% endblock %}
+
+

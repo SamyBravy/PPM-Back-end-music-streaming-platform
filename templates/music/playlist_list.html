@@ -1,36 +1,129 @@
 {% extends 'base.html' %}
 
-{% block title %}Le mie Playlist — Music Streaming{% endblock %}
+{% block title %}Playlists — Music Streaming{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center">
-    <h2>📋 Le mie Playlist</h2>
-    <a href="{% url 'music:playlist_create' %}" class="btn btn-success">+ Crea Nuova Playlist</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">🎵 Playlists</h2>
+    <a href="{% url 'music:playlist_create' %}" class="btn btn-success">+ Create New Playlist</a>
 </div>
-<hr>
 
+{% if famous_playlists %}
+<h3 class="mt-4" style="color: var(--accent-tertiary);">🌟 Famous Playlists</h3>
+<p class="text-muted">Curated selections from our experts.</p>
+<div class="row mb-5">
+    {% for playlist in famous_playlists %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 neo-card" style="border-color: var(--accent-tertiary);">
+            <div class="card-body text-center d-flex flex-column">
+                <h5 class="card-title fw-bold">
+                    {{ playlist.name }}
+                </h5>
+                <div class="mb-3">
+                    <span class="badge bg-warning text-dark">🌟 Editorial</span>
+                </div>
+                <p class="card-text text-muted mb-4">
+                    {{ playlist.songs.count }} song{{ playlist.songs.count|pluralize }}
+                </p>
+                <div class="mt-auto">
+                    <a href="{% url 'music:playlist_detail' playlist.pk %}" class="btn btn-outline-primary btn-sm w-100">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if favorite_playlists %}
+<h3 class="mt-4" style="color: var(--accent-primary);">⭐ My Favorites</h3>
+<p class="text-muted">Playlists you have saved.</p>
+<div class="row mb-5">
+    {% for playlist in favorite_playlists %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 neo-card">
+            <div class="card-body text-center d-flex flex-column">
+                <h5 class="card-title fw-bold">
+                    {{ playlist.name }}
+                </h5>
+                <div class="mb-3">
+                    {% if playlist.is_editorial %}
+                        <span class="badge bg-warning text-dark">🌟 Editorial</span>
+                    {% else %}
+                        <span class="badge bg-success">Public</span>
+                    {% endif %}
+                </div>
+                <p class="card-text text-muted mb-4">
+                    {{ playlist.songs.count }} song{{ playlist.songs.count|pluralize }} &bull; by {{ playlist.owner.username }}
+                </p>
+                <div class="mt-auto d-flex gap-2">
+                    <a href="{% url 'music:playlist_detail' playlist.pk %}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                        View
+                    </a>
+                    <a href="{% url 'music:toggle_favorite_playlist' playlist.pk %}" class="btn btn-warning btn-sm" title="Remove from favorites">
+                        ⭐
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<h3 class="mt-4" style="color: #d9534f;">❤️ Liked Songs</h3>
+<p class="text-muted">Songs you have loved.</p>
+{% if liked_songs %}
+    <div class="row mb-5">
+        {% for song in liked_songs %}
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 neo-card">
+                <div class="card-body p-3">
+                    <h6 class="card-title mb-1 fw-bold">
+                        <a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none" style="color: var(--text-primary);">
+                            {{ song.title }}
+                        </a>
+                    </h6>
+                    <small class="text-muted">{{ song.artist }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-light border mb-5">
+        You haven't liked any songs yet. Browse the catalog to find your favorites!
+    </div>
+{% endif %}
+
+<h3 class="mt-4">📁 My Created Playlists</h3>
+<p class="text-muted">Playlists created by you.</p>
 {% if playlist_list %}
-    <div class="row">
+    <div class="row mb-5">
         {% for playlist in playlist_list %}
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm border-0 bg-light">
+            <div class="card h-100 neo-card">
                 <div class="card-body text-center d-flex flex-column">
-                    <h5 class="card-title">
+                    <h5 class="card-title fw-bold">
                         {{ playlist.name }}
                     </h5>
                     <div class="mb-3">
-                        {% if playlist.is_public %}
-                            <span class="badge bg-success">Pubblica</span>
+                        {% if playlist.is_editorial %}
+                            <span class="badge bg-warning text-dark">🌟 Editorial</span>
+                        {% elif playlist.is_public %}
+                            <span class="badge bg-success">👥 Friends Only</span>
                         {% else %}
-                            <span class="badge bg-secondary">Privata</span>
+                            <span class="badge bg-secondary">🔒 Private</span>
                         {% endif %}
                     </div>
                     <p class="card-text text-muted mb-4">
-                        {{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}
+                        {{ playlist.songs.count }} song{{ playlist.songs.count|pluralize }}
                     </p>
                     <div class="mt-auto">
-                        <a href="{% url 'music:playlist_detail' playlist.pk %}" class="btn btn-outline-primary btn-sm">
-                            Visualizza
+                        <a href="{% url 'music:playlist_detail' playlist.pk %}" class="btn btn-outline-primary btn-sm w-100">
+                            View / Edit
                         </a>
                     </div>
                 </div>
@@ -40,7 +133,8 @@
     </div>
 {% else %}
     <div class="alert alert-info">
-        Non hai ancora creato nessuna playlist. Inizia subito!
+        You haven't created any playlists yet. Start now!
     </div>
 {% endif %}
+
 {% endblock %}

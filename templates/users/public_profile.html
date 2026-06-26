@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Profilo di {{ target_user.username }} — Music Streaming{% endblock %}
+{% block title %}Profile of {{ target_user.username }} — Music Streaming{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card shadow mb-4">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">{{ target_user.profile_icon }} {{ target_user.username }}</h4>
+        <div class="card neo-card mb-4">
+            <div class="card-header border-bottom bg-transparent d-flex justify-content-between align-items-center">
+                <h4 class="mb-0" style="color: var(--accent-tertiary);">👤 Profile of {{ target_user.username }}</h4>
                 {% if target_user.is_superuser %}
                     <span class="badge bg-danger">Admin</span>
                 {% elif target_user.is_staff %}
@@ -17,30 +17,30 @@
                 {% endif %}
             </div>
             <div class="card-body p-4 text-center">
-                {% if target_user.first_name or target_user.last_name %}
-                    <h3 class="mb-3">{{ target_user.first_name }} {{ target_user.last_name }}</h3>
-                {% endif %}
-                
-                <p class="text-muted">Membro dal {{ target_user.date_joined|date:"M Y" }}</p>
-
+                <ul class="list-group list-group-flush mt-3">
+                    {% if target_user.first_name or target_user.last_name %}
+                    <li class="list-group-item"><strong>Full Name:</strong> {{ target_user.first_name }} {{ target_user.last_name }}</li>
+                    {% endif %}
+                    <li class="list-group-item"><strong>Date Joined:</strong> {{ target_user.date_joined|date:"M d, Y" }}</li>
+                </ul>
                 <div class="mt-4">
                     {% if target_user == request.user %}
-                        <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">Vai al tuo profilo privato</a>
+                        <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">Go to your private profile</a>
                     {% else %}
                         {% if is_friend %}
                             <form action="{% url 'users:remove_friend' target_user.username %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn btn-success" disabled>✅ Siete amici</button>
-                                <button type="submit" class="btn btn-outline-danger ms-2" onclick="return confirm('Vuoi davvero rimuovere {{ target_user.username }} dai tuoi amici?');">❌ Rimuovi Amico</button>
+                                <button class="btn btn-success" disabled>✅ Friends</button>
+                                <button type="submit" class="btn btn-outline-danger ms-2" onclick="return confirm('Are you sure you want to remove {{ target_user.username }} from your friends?');">❌ Remove Friend</button>
                             </form>
                         {% elif request_sent %}
-                            <button class="btn btn-secondary" disabled>⏳ Richiesta inviata</button>
+                            <button class="btn btn-secondary" disabled>⏳ Request Sent</button>
                         {% elif request_received %}
-                            <span class="text-muted">Ti ha inviato una richiesta. Controlla il tuo profilo.</span>
+                            <span class="text-muted">They sent you a request. Check your profile.</span>
                         {% else %}
                             <form action="{% url 'users:send_request' target_user.username %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-primary">➕ Aggiungi agli amici</button>
+                                <button type="submit" class="btn btn-primary">➕ Add Friend</button>
                             </form>
                         {% endif %}
                     {% endif %}
@@ -48,25 +48,35 @@
             </div>
         </div>
 
-        {% if is_friend or target_user == request.user %}
-        <div class="card shadow mb-4 border-info">
-            <div class="card-header bg-info text-dark">
-                <h5 class="mb-0">🎵 Playlist Pubbliche</h5>
+        {% if public_playlists %}
+        <div class="card neo-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0" style="color: var(--accent-tertiary);">📋 Created Playlists ({{ public_playlists.count }})</h5>
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
                     {% for playlist in public_playlists %}
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <a href="{% url 'music:playlist_detail' playlist.pk %}" class="fw-bold text-decoration-none">
-                            {{ playlist.name }}
+                        <div>
+                            <a href="{% url 'music:playlist_detail' playlist.pk %}" class="fw-bold text-decoration-none me-2">
+                                {{ playlist.name }}
+                            </a>
+                            {% if playlist.is_editorial %}
+                                <span class="badge bg-warning text-dark me-1">🌟 Editorial</span>
+                            {% elif playlist.is_public %}
+                                <span class="badge bg-success me-1">👥 Friends Only</span>
+                            {% else %}
+                                <span class="badge bg-secondary me-1">🔒 Private</span>
+                            {% endif %}
+                            <span class="badge bg-light text-dark border rounded-pill">
+                                {{ playlist.songs.count }} song{{ playlist.songs.count|pluralize }}
+                            </span>
+                        </div>
+                        {% if playlist.owner != request.user %}
+                        <a href="{% url 'music:toggle_favorite_playlist' playlist.pk %}" class="btn btn-sm {% if request.user in playlist.followers.all %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                            ⭐
                         </a>
-                        <span class="badge bg-secondary rounded-pill">
-                            {{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}
-                        </span>
-                    </li>
-                    {% empty %}
-                    <li class="list-group-item p-4 text-center text-muted">
-                        Nessuna playlist pubblica disponibile.
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
@@ -74,9 +84,9 @@
         </div>
         {% endif %}
 
-        <div class="card shadow">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">💬 Attività Recente (Commenti)</h5>
+        <div class="card neo-card mt-4">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0" style="color: var(--accent-tertiary);">💬 Recent Activity (Comments)</h5>
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
@@ -84,7 +94,7 @@
                     <li class="list-group-item p-3">
                         <div class="d-flex w-100 justify-content-between">
                             <h6 class="mb-1">
-                                Sotto a <a href="{% url 'music:song_detail' comment.song.pk %}" class="fw-bold text-decoration-none">{{ comment.song.title }}</a>
+                                On <a href="{% url 'music:song_detail' comment.song.pk %}" class="fw-bold text-decoration-none">{{ comment.song.title }}</a>
                             </h6>
                             <small class="text-muted">{{ comment.created_at|date:"d M, H:i" }}</small>
                         </div>
@@ -92,7 +102,7 @@
                     </li>
                     {% empty %}
                     <li class="list-group-item p-4 text-center text-muted">
-                        {{ target_user.username }} non ha ancora commentato alcun brano.
+                        {{ target_user.username }} has not commented on any songs yet.
                     </li>
                     {% endfor %}
                 </ul>

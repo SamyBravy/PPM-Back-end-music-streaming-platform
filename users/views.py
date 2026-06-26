@@ -62,11 +62,16 @@ class PublicProfileView(LoginRequiredMixin, DetailView):
         
         context['is_friend'] = is_friend
         
-        if is_friend or is_self:
+        if is_self:
+            from django.db.models import Q
+            context['public_playlists'] = target_user.playlists.filter(Q(is_public=True) | Q(is_editorial=True)).distinct()
+        elif is_friend:
             context['public_playlists'] = target_user.playlists.filter(is_public=True)
+        else:
+            context['public_playlists'] = target_user.playlists.filter(is_editorial=True)
             
         if not is_friend and not is_self:
-            # Controllo se c'è una richiesta in sospeso
+            # Check if a friend request is pending
             req_sent = FriendRequest.objects.filter(sender=current_user, receiver=target_user, is_accepted=False).exists()
             req_received = FriendRequest.objects.filter(sender=target_user, receiver=current_user, is_accepted=False).exists()
             context['request_sent'] = req_sent
@@ -81,20 +86,20 @@ def send_friend_request_by_username(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         if not username:
-            messages.error(request, "Inserisci un nome utente valido.")
+            messages.error(request, "Please enter a valid username.")
             return redirect('users:profile')
             
         try:
             target_user = CustomUser.objects.get(username=username)
             if target_user == request.user:
-                messages.warning(request, "Non puoi inviare una richiesta a te stesso.")
+                messages.warning(request, "You cannot send a friend request to yourself.")
             elif request.user.friends.filter(pk=target_user.pk).exists():
-                messages.info(request, f"Sei già amico di {username}.")
+                messages.info(request, f"You are already friends with {username}.")
             else:
                 FriendRequest.objects.get_or_create(sender=request.user, receiver=target_user)
-                messages.success(request, f"Richiesta di amicizia inviata a {username}.")
+                messages.success(request, f"Friend request sent to {username}.")
         except CustomUser.DoesNotExist:
-            messages.error(request, f"L'utente '{username}' non esiste.")
+            messages.error(request, f"The user '{username}' does not exist.")
             
     return redirect('users:profile')
 
@@ -131,8 +136,8 @@ def remove_friend(request, username):
     if request.method == 'POST':
         if request.user.friends.filter(pk=target_user.pk).exists():
             request.user.friends.remove(target_user)
-            # Eliminiamo eventuali FriendRequest pregresse in entrambe le direzioni
+            # Remove previous requests in both directions
             FriendRequest.objects.filter(sender=request.user, receiver=target_user).delete()
             FriendRequest.objects.filter(sender=target_user, receiver=request.user).delete()
-            messages.success(request, f"Hai rimosso {username} dai tuoi amici.")
+            messages.success(request, f"You have removed {username} from your friends.")
     return redirect('users:public_profile', username=username)

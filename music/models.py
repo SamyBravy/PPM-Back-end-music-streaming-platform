@@ -22,6 +22,14 @@ class Song(models.Model):
         related_name='songs',
     )
     duration = models.DurationField()
+    from django.core.validators import FileExtensionValidator
+    audio_file = models.FileField(
+        upload_to='songs/', 
+        blank=True, 
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'])]
+    )
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_songs', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -39,6 +47,7 @@ class Comment(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -62,6 +71,12 @@ class Playlist(models.Model):
         blank=True,
     )
     is_public = models.BooleanField(default=False)
+    is_editorial = models.BooleanField(default=False)
+    followers = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='favorite_playlists',
+        blank=True
+    )
 
     def __str__(self):
         return f'{self.name} ({self.owner})'

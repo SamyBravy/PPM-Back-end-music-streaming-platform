@@ -5,16 +5,20 @@ from music.models import Song
 from .serializers import SongSerializer
 
 
+from rest_framework import filters
+
 class SongAPIListView(generics.ListCreateAPIView):
     """
     GET  /api/songs/ — Lista paginata di tutti i brani (pubblico).
     POST /api/songs/ — Crea un nuovo brano (solo utenti autenticati).
     Supporta filtraggio per artist e genre via query params.
+    Supporta ricerca testuale via ?search=...
     """
     queryset = Song.objects.all()
     serializer_class = SongSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['artist', 'genre']
+    search_fields = ['title', 'artist']
 
 
 class SongAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
