@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilo di {{ user.username }} — Music Streaming{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">👤 Il tuo Profilo Personale</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">
+                        {{ user.profile_icon }} {{ user.first_name|default:"" }} {{ user.last_name|default:"" }}
+                        {% if not user.first_name and not user.last_name %}
+                            {{ user.username }}
+                        {% endif %}
+                    </h2>
+                    {% if user.is_superuser %}
+                        <span class="badge bg-danger fs-6">Admin</span>
+                    {% elif user.is_staff %}
+                        <span class="badge bg-warning text-dark fs-6">Curator</span>
+                    {% else %}
+                        <span class="badge bg-info text-dark fs-6">Listener</span>
+                    {% endif %}
+                </div>
+                
+                <ul class="list-group list-group-flush mb-4">
+                    {% if user.first_name or user.last_name %}
+                    <li class="list-group-item">
+                        <strong>Nome e Cognome:</strong> {{ user.first_name }} {{ user.last_name }}
+                    </li>
+                    {% endif %}
+                    {% if user.birth_date %}
+                    <li class="list-group-item">
+                        <strong>Data di Nascita:</strong> {{ user.birth_date|date:"d M Y" }}
+                    </li>
+                    {% endif %}
+                    <li class="list-group-item">
+                        <strong>Ruolo:</strong> {{ user.get_role_display|default:user.role }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Data di iscrizione:</strong> {{ user.date_joined|date:"d M Y" }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Ultimo accesso:</strong> {{ user.last_login|date:"d M Y, H:i"|default:"Mai" }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Playlist create:</strong> {{ user.playlists.count }}
+                    </li>
+                </ul>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">
+                        ✏️ Modifica Dati Personali
+                    </a>
+                    <a href="{% url 'users:public_profile' request.user.username %}" class="btn btn-outline-primary">
+                        👁️ Vai al mio Profilo Pubblico
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if pending_requests %}
+        <div class="card shadow mt-4 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">⏳ Richieste di amicizia ({{ pending_requests.count }})</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for req in pending_requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <a href="{% url 'users:public_profile' req.sender.username %}" class="text-decoration-none fw-bold">@{{ req.sender.username }}</a> ti ha inviato una richiesta
+                    </span>
+                    <div>
+                        <form action="{% url 'users:accept_request' req.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-success">Accetta</button>
+                        </form>
+                        <form action="{% url 'users:reject_request' req.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Rifiuta</button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="card shadow mt-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">👥 I tuoi Amici ({{ friends_list.count }})</h5>
+            </div>
+            <div class="card-body">
+                <!-- Form Aggiungi Amico -->
+                <form action="{% url 'users:send_request_by_username' %}" method="post" class="mb-4">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">@</span>
+                        <input type="text" name="username" class="form-control" placeholder="Inserisci il nome utente esatto da aggiungere..." required>
+                        <button type="submit" class="btn btn-primary">➕ Invia Richiesta</button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                {% if friends_list %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for friend in friends_list %}
+                            <a href="{% url 'users:public_profile' friend.username %}" class="btn btn-outline-dark btn-sm">
+                                @{{ friend.username }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">Non hai ancora nessun amico. Cerca qualcuno tramite username o esplora i commenti per aggiungere persone!</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

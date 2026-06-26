@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}Modifica Playlist{% else %}Crea Nuova Playlist{% endif %} — Music Streaming
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="card-title mb-4">
+                    {% if object %}✏️ Modifica Playlist{% else %}➕ Crea Nuova Playlist{% endif %}
+                </h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            {% if object %}Salva Modifiche{% else %}Crea Playlist{% endif %}
+                        </button>
+                        <a href="{% url 'music:playlist_list' %}" class="btn btn-outline-secondary ms-2">
+                            Annulla
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

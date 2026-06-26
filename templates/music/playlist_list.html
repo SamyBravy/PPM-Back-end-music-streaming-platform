@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Le mie Playlist — Music Streaming{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>📋 Le mie Playlist</h2>
+    <a href="{% url 'music:playlist_create' %}" class="btn btn-success">+ Crea Nuova Playlist</a>
+</div>
+<hr>
+
+{% if playlist_list %}
+    <div class="row">
+        {% for playlist in playlist_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center d-flex flex-column">
+                    <h5 class="card-title">
+                        {{ playlist.name }}
+                    </h5>
+                    <div class="mb-3">
+                        {% if playlist.is_public %}
+                            <span class="badge bg-success">Pubblica</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Privata</span>
+                        {% endif %}
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        {{ playlist.songs.count }} bran{{ playlist.songs.count|pluralize:"o,i" }}
+                    </p>
+                    <div class="mt-auto">
+                        <a href="{% url 'music:playlist_detail' playlist.pk %}" class="btn btn-outline-primary btn-sm">
+                            Visualizza
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Non hai ancora creato nessuna playlist. Inizia subito!
+    </div>
+{% endif %}
+{% endblock %}

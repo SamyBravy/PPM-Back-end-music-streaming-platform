@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Elimina Playlist — Music Streaming{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-danger">
+            <div class="card-body p-4 text-center">
+                <h2 class="card-title text-danger mb-3">🗑️ Conferma Eliminazione</h2>
+                <p class="lead">
+                    Sei sicuro di voler eliminare la playlist
+                    <strong>"{{ object.name }}"</strong>?
+                </p>
+                <p class="text-muted">Questa azione è irreversibile e rimuoverà la playlist.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Sì, Elimina Playlist
+                    </button>
+                    <a href="{% url 'music:playlist_detail' object.pk %}" class="btn btn-outline-secondary ms-2">
+                        Annulla
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

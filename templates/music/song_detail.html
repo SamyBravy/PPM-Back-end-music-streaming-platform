@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ song.title }} — Music Streaming{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Dettagli Brano -->
+        <div class="card shadow mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="card-title mb-0">🎵 {{ song.title }}</h2>
+                    <span class="badge bg-secondary fs-6">{{ song.genre.name }}</span>
+                </div>
+                <h4 class="text-muted mb-4">{{ song.artist }}</h4>
+                <p><strong>Durata:</strong> {{ song.duration }}</p>
+                
+                <div class="mt-4 d-flex gap-2">
+                    <a href="{% url 'music:song_list' %}" class="btn btn-outline-primary">&larr; Torna al Catalogo</a>
+                    
+                    {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownAddPlaylist" data-bs-toggle="dropdown" aria-expanded="false">
+                            ➕ Aggiungi a Playlist
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownAddPlaylist">
+                            {% if user_playlists %}
+                                {% for playlist in user_playlists %}
+                                    <li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id playlist.id %}">{{ playlist.name }}</a></li>
+                                {% endfor %}
+                            {% else %}
+                                <li><span class="dropdown-item text-muted">Nessuna playlist creata</span></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-bold text-success" href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">➕ Crea nuova</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione Commenti -->
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">💬 Commenti ({{ song.comments.count }})</h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Form Inserimento Commento -->
+                <form method="post" class="mb-4">
+                    {% csrf_token %}
+                    {{ comment_form|crispy }}
+                    <div class="text-end mt-2">
+                        <button type="submit" class="btn btn-primary">Invia Commento</button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <!-- Lista Commenti -->
+                {% for comment in song.comments.all %}
+                <div class="d-flex mb-3 p-3 bg-white border rounded shadow-sm">
+                    <div class="flex-grow-1">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">
+                                {{ comment.author.profile_icon }} 
+                                <a href="{% url 'users:public_profile' comment.author.username %}" class="fw-bold text-decoration-none text-dark">
+                                    @{{ comment.author.username }}
+                                </a>
+                                {% if comment.author.is_staff %}
+                                    <span class="badge bg-warning text-dark ms-1">Curator</span>
+                                {% endif %}
+                            </h6>
+                            <small class="text-muted">{{ comment.created_at|date:"d M Y, H:i" }}</small>
+                        </div>
+                        <p class="mb-0 mt-2">{{ comment.text|linebreaksbr }}</p>
+                    </div>
+                    {% if user.is_staff or user.is_superuser %}
+                        <div class="ms-3 d-flex align-items-center">
+                            <form action="{% url 'music:comment_delete' comment.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Elimina Commento">
+                                    🗑️ Elimina
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-muted text-center my-4">Nessun commento presente. Scrivi tu il primo!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

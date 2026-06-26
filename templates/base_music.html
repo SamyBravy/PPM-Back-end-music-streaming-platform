@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar Playlist -->
+    <aside class="col-md-3">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">🎧 Playlist</h5>
+            </div>
+            <div class="card-body">
+                {% block sidebar %}
+                    <ul class="list-group list-group-flush mb-3">
+                    {% for pl in user.playlists.all %}
+                        <a href="{% url 'music:playlist_detail' pl.pk %}" class="list-group-item list-group-item-action border-0 px-2 py-1">
+                            🎵 {{ pl.name }}
+                        </a>
+                    {% empty %}
+                        <li class="list-group-item text-muted border-0 px-2">Nessuna playlist</li>
+                    {% endfor %}
+                    </ul>
+                    <a href="{% url 'music:playlist_create' %}" class="btn btn-success btn-sm w-100 mb-2">
+                        + Nuova Playlist
+                    </a>
+                    <a href="{% url 'music:playlist_list' %}" class="btn btn-outline-primary btn-sm w-100">
+                        Gestisci Playlist
+                    </a>
+                {% endblock %}
+            </div>
+        </div>
+    </aside>
+
+    <!-- Area contenuto principale -->
+    <section class="col-md-9">
+        {% block music_content %}{% endblock %}
+    </section>
+</div>
+{% endblock %}
