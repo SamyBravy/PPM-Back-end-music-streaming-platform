@@ -21,7 +21,7 @@
             </a>
         {% endif %}
         {% if playlist.owner == request.user or request.user.is_staff %}
-            <a href="{% url 'music:playlist_update' playlist.pk %}" class="btn btn-outline-secondary">✏️ Edit</a>
+            <a href="{% url 'music:playlist_update' playlist.pk %}?next={{ request.path }}" class="btn btn-outline-secondary">✏️ Edit</a>
         {% endif %}
         {% if playlist.owner == request.user %}
             <a href="{% url 'music:playlist_delete' playlist.pk %}" class="btn btn-outline-danger">Delete Playlist</a>

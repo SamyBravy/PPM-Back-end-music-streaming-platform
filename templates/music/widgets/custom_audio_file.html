@@ -1,0 +1,26 @@
+{% load static %}
+<div id="audio_ui_container_{{ widget.name }}">
+    <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %} 
+           id="{{ widget.attrs.id }}" style="{% if widget.is_initial and not widget.attrs.data_cleared %}display: none;{% endif %}" 
+           onchange="handleAudioSelection(this, '{{ widget.name }}', '{% if not widget.required %}{{ widget.checkbox_id }}{% endif %}')">
+    
+    <div id="loaded_state_{{ widget.name }}" class="mt-2" style="{% if not widget.is_initial or widget.attrs.data_cleared %}display: none;{% endif %}">
+        <div class="mb-2" id="current_{{ widget.name }}">
+            <span class="text-muted">Current audio:</span>
+            <a href="#" onclick="document.getElementById('{{ widget.attrs.id }}').click(); return false;" class="text-primary fw-bold text-decoration-none" title="Click to select a different audio file">
+                🎵 <span id="current_{{ widget.name }}_text">{% if widget.is_initial %}{{ widget.value.name }}{% endif %}</span> <small class="text-muted ms-1">(Click to change)</small>
+            </a>
+        </div>
+        
+        <div class="mb-3" id="remove_btn_container_{{ widget.name }}">
+            {% if not widget.required %}
+            <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" style="display: none;" {% if widget.attrs.disabled %} disabled{% endif %} {% if widget.attrs.data_cleared %}checked{% endif %}>
+            {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeAudio('{{ widget.name }}', '{% if not widget.required %}{{ widget.checkbox_id }}{% endif %}', '{{ widget.attrs.id }}')">
+                🗑️ Remove Audio
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/audio_widget.js' %}"></script>

@@ -1,98 +1,51 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}
-    {% if object %}Edit Song{% else %}Add Song{% endif %} — Music Streaming
+{% if object %}Edit Song{% else %}Add Song{% endif %} — Music Streaming
 {% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card neo-card">
-            <div class="card-body p-4">
-                <h2 class="card-title mb-4" style="color: var(--accent-tertiary);">
-                    {% if object %}✏️ Edit Song{% else %}➕ Add Song{% endif %}
-                </h2>
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary">
-                            {% if object %}Save Changes{% else %}Add{% endif %}
-                        </button>
-                        <a href="{% url 'music:song_list' %}" class="btn btn-outline-secondary ms-2">
-                            Cancel
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+	<div class="col-md-8">
+		<div class="card neo-card">
+			<div class="card-body p-4">
+				<h2 class="card-title mb-4" style="color: var(--accent-tertiary);">
+					{% if object %}✏️ Edit Song{% else %}➕ Add Song{% endif %}
+				</h2>
+				<form method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<input type="hidden" name="next" value="{{ next_url|default:'' }}">
+					{{ form.title|as_crispy_field }}
+					{{ form.artist|as_crispy_field }}
+					{{ form.genre|as_crispy_field }}
+					{{ form.duration|as_crispy_field }}
+					
+					<div class="mb-4 p-3 border rounded neo-card" style="background-color: var(--bg-color);">
+						<label for="{{ form.audio_file.id_for_label }}" class="form-label fw-bold">
+							Audio file{% if form.audio_file.field.required %}<span class="text-danger">*</span>{% endif %}
+						</label>
+						{{ form.audio_file }}
+						{% if form.audio_file.errors %}
+							<div class="invalid-feedback d-block">
+								{{ form.audio_file.errors|join:", " }}
+							</div>
+						{% endif %}
+					</div>
+					<div class="mt-3">
+						<button type="submit" class="btn btn-primary">
+							{% if object %}Save Changes{% else %}Add{% endif %}
+						</button>
+						<a href="{% if next_url %}{{ next_url }}{% else %}{% url 'music:song_list' %}{% endif %}" class="btn btn-outline-secondary ms-2">
+							Cancel
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const audioInput = document.getElementById('id_audio_file');
-    const durationInput = document.getElementById('id_duration');
-    
-    if (audioInput && durationInput) {
-        // Crea un elemento visivo per confermare la durata rilevata
-        const btnContainer = document.querySelector('.mt-3');
-        const displayDiv = document.createElement('div');
-        displayDiv.className = 'alert border-0 mb-3 d-none';
-        displayDiv.style.backgroundColor = 'rgba(61, 64, 91, 0.05)';
-        displayDiv.style.color = 'var(--accent-tertiary)';
-        displayDiv.innerHTML = '⏱️ <strong>Durata rilevata dal file:</strong> <span id="durationText"></span>';
-        btnContainer.parentNode.insertBefore(displayDiv, btnContainer);
-        
-        const durationText = document.getElementById('durationText');
-        
-        audioInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Leggiamo la durata se è un file valido
-                const objectUrl = URL.createObjectURL(file);
-                const audio = new Audio(objectUrl);
-                
-                audio.addEventListener('loadedmetadata', function() {
-                    const durationInSeconds = audio.duration;
-                    
-                    if (isFinite(durationInSeconds)) {
-                        // Converte in HH:MM:SS
-                        const hours = Math.floor(durationInSeconds / 3600);
-                        const minutes = Math.floor((durationInSeconds % 3600) / 60);
-                        const seconds = Math.floor(durationInSeconds % 60);
-                        
-                        let formattedDuration = '';
-                        if (hours > 0) {
-                            formattedDuration += hours.toString().padStart(2, '0') + ':';
-                        }
-                        formattedDuration += minutes.toString().padStart(2, '0') + ':' + 
-                                             seconds.toString().padStart(2, '0');
-                                             
-                        durationInput.value = formattedDuration;
-                        durationInput.readOnly = true; // Blocca il campo manuale
-                        durationInput.style.backgroundColor = 'var(--neo-bg)';
-                        
-                        durationText.textContent = formattedDuration;
-                        displayDiv.classList.remove('d-none');
-                    }
-                    
-                    URL.revokeObjectURL(objectUrl);
-                });
-                
-                audio.addEventListener('error', function() {
-                    // Se non riesce a leggerlo (file non valido), sblocca
-                    durationInput.readOnly = false;
-                    displayDiv.classList.add('d-none');
-                });
-                
-            } else {
-                durationInput.readOnly = false;
-                displayDiv.classList.add('d-none');
-            }
-        });
-    }
-});
-</script>
+<script src="{% static 'js/song_form.js' %}"></script>
 {% endblock %}

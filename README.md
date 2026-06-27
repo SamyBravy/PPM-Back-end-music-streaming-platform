@@ -1,14 +1,15 @@
 # Backend Project: Music Streaming Service
 
 **Student:** Samuele Dell'Erba
-**Project Type:** Full-Stack Web Application (with REST API support)  
-**Framework Used:** Django 5.x + Django REST Framework  
+**Project Type:** Full-Stack Web Application
+**Framework Used:** Django 5.x
+**Deployment Link:** [Insert your Render/Railway/PythonAnywhere deployment link here]
 
 ---
 
 ## Project Description
 
-This project involves the development of a web application for a music streaming service, structured on a **hybrid Monolithic MVT** architecture, with built-in support for **REST APIs**. The application allows managing a music catalog (genres, songs) and creating personal playlists by users.
+This project involves the development of a web application for a music streaming service, structured on a **hybrid Monolithic MVT** architecture. The application allows managing a music catalog (genres, songs) and creating personal playlists by users.
 
 The project includes an authentication system, role differentiation (Listener and Curator), and custom forms rendered with Bootstrap 5, fully complying with the assignment requirements.
 
@@ -30,11 +31,10 @@ The system uses a custom user model (`CustomUser`) with predefined roles that re
 - Free navigation and browsing of the song catalog and musical genres.
 - Creation and viewing of personal playlists.
 - Access and navigation to routes protected by `LoginRequiredMixin`.
-- Read-only consumption of the APIs.
 
 ### Role: **Curator** (Staff Member)
 - All the features of the Listener.
-- Insertion, modification, and deletion (CRUD) of music tracks from the catalog (via protected Class-Based Views and via REST API).
+- Insertion, modification, and deletion (CRUD) of music tracks from the catalog (via protected Class-Based Views).
 - Management through the administration panel (`/admin`).
 - Destructive or write operations are protected on the backend by the `PermissionRequiredMixin`.
 
@@ -86,34 +86,12 @@ Requirements: Python 3.10+
 
 The distributed SQLite database is already pre-populated with songs, genres, and test user accounts:
 
-| Username | Password | Role | Notes |
+| Username | Password | Role Equivalent | Notes |
 |---|---|---|---|
-| `admin_demo` | `admin12345` | Superuser | Full access and admin. |
-| `curator_demo` | `curator12345` | Curator (Staff) | Permissions to add/edit/delete songs. |
-| `listener_demo`| `listener12345`| Listener | Standard read-only user (catalog) and write access to their own playlists. |
-
----
-
-## API Endpoints (Django REST Framework)
-
-The system exposes the music catalog to external clients via the `apis` app, following the REST architecture:
-
-| HTTP Method | Endpoint | Authentication | Description |
-|---|---|---|---|
-| **GET** | `/api/songs/` | Public | List of music tracks with pagination. Supports filters for `artist` and `genre` (e.g. `?artist=Queen`). |
-| **POST** | `/api/songs/` | Required (Token/Session) | Creation of a new track. |
-| **GET** | `/api/songs/<id>/` | Public | Details of a specific track. |
-| **PUT/PATCH** | `/api/songs/<id>/` | Required (Token/Session) | Partial or full modification of a specific track. |
-| **DELETE** | `/api/songs/<id>/` | Required (Token/Session) | Deletion of a track. |
-
-*(API security is implemented with DRF's native `IsAuthenticatedOrReadOnly` Policy and `TokenAuthentication`).*
-
----
-
-## Deployment Link
-
-The application is regularly deployed and reachable online at the following address:
-**[INSERT DEPLOYMENT LINK HERE (e.g. Render, Heroku)]**
+| `admin_demo` | `admin12345` | Administrator (Superuser) | Full access and admin panel access. |
+| `curator_demo` | `curator12345` | Manager (Staff) | Advanced role. Permissions to add/edit/delete songs and genres. |
+| `moderator_demo`| `moderator12345`| Moderator | Focuses on community moderation. Can delete any comment. |
+| `listener_demo`| `listener12345`| User (Standard) | Standard read-only user (catalog) and write access to their own playlists. |
 
 ---
 
@@ -134,7 +112,26 @@ As required by the specifications for Full-Stack projects, here is a short scena
    - Fill out the form: enter a title, an artist, and select a genre. Upload an audio file (the *Duration* field will auto-fill and lock to prevent tampering).
    - Click **Add**. You will be redirected to the catalog and see a green success message. Your new song is now in the catalog.
    
-3. **Social and Playlist Test (User Interaction)**
-   - From the Home or Catalog, click on the heart (🤍) next to the newly created song to add it to your favorites (it will turn into ❤️).
+3. **Moderator Workflow (Community Management):**
+   - **Logout** and log in as `moderator_demo` (password: `moderator12345`).
+   - Navigate to any song in the **Music Catalog**.
+   - **Verify:** You can see the red "🗑️ Delete" button on *all* user comments, allowing you to moderate the community.
+   - Log out.
+
+4. **Admin Workflow (System Management):**
+   - Log in as `admin_demo` (password: `admin12345`).
+   - **Verify:** You can see the red "⚙️ Control Panel" button in the navigation bar.
+   - Click it to access the Django backend administration panel.
+   
+5. **Social and Playlist Test (User Interaction)**
+   - Log back in as `listener_demo` (password: `listener12345`).
+   - From the Home or Catalog, click on the heart (🤍) next to a song to add it to your favorites (it will turn into ❤️).
    - Expand the "Add to..." dropdown menu and create a new playlist called "My Hits".
    - Go back to the **Home**: you will notice that the recommendation system ("Recommended for you") has analyzed your Likes and Playlists, proposing similar tracks while automatically discarding the ones you already know!
+
+---
+
+## Deployment Link
+
+The application is regularly deployed and reachable online at the following address:
+**[INSERT DEPLOYMENT LINK HERE (e.g. Render, Heroku)]**

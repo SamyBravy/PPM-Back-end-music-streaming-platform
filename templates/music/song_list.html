@@ -47,7 +47,7 @@
 
 {% if song_list %}
     <div class="neo-card">
-        <div class="table-responsive" style="overflow: visible;">
+        <div class="table-responsive">
             <table class="table table-striped table-hover mb-0 align-middle text-center">
                 <thead class="table-dark">
                     <tr>
@@ -74,10 +74,10 @@
                                 {% if user in song.likes.all %}❤️{% else %}🤍{% endif %}
                             </a>
                             <div class="dropdown d-inline">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-boundary="window">
                                     Add to...
                                 </button>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu text-center">
                                     {% with av_playlists=user|available_playlists:song %}
                                         {% for pl in av_playlists %}
                                             <li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id pl.id %}">{{ pl.name }}</a></li>
@@ -90,7 +90,7 @@
                                 </ul>
                             </div>
                             {% if user.is_staff %}
-                                <a href="{% url 'music:song_update' song.pk %}" class="btn btn-sm btn-outline-primary ms-1">Edit</a>
+                                <a href="{% url 'music:song_update' song.pk %}?next={{ request.path }}" class="btn btn-sm btn-outline-primary ms-1">Edit</a>
                                 <a href="{% url 'music:song_delete' song.pk %}" class="btn btn-sm btn-outline-danger ms-1">Delete</a>
                             {% endif %}
                         </td>

@@ -11,20 +11,24 @@
                 <h4 class="mb-0" style="color: var(--accent-tertiary);">👤 Your Personal Profile</h4>
             </div>
             <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <h2 class="mb-0 text-break">
                         {{ user.profile_icon }} {{ user.first_name|default:"" }} {{ user.last_name|default:"" }}
                         {% if not user.first_name and not user.last_name %}
                             {{ user.username }}
                         {% endif %}
                     </h2>
+                    <div>
                     {% if user.is_superuser %}
                         <span class="badge bg-danger fs-6">Admin</span>
-                    {% elif user.is_staff %}
+                    {% elif user.role == 'moderator' %}
+                        <span class="badge bg-success fs-6">Moderator</span>
+                    {% elif user.role == 'curator' %}
                         <span class="badge bg-warning text-dark fs-6">Curator</span>
                     {% else %}
                         <span class="badge bg-info text-dark fs-6">Listener</span>
                     {% endif %}
+                    </div>
                 </div>
                 
                 <ul class="list-group list-group-flush mb-4">

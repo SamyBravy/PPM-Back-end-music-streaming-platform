@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ('listener', 'Listener'),
         ('curator', 'Curator'),
+        ('moderator', 'Moderator'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='listener')
     birth_date = models.DateField(null=True, blank=True)

@@ -1,10 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Song, Playlist, Genre
+
+from .models import Song, Playlist, Genre, Comment
+from .forms import CommentForm, PlaylistForm, SongForm
 
 class SongListView(LoginRequiredMixin, ListView):
     """Vista catalogo brani — protetta da login."""
@@ -46,16 +49,38 @@ class SongCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """Creazione brano — solo Curator (permission: music.add_song)."""
     model = Song
     template_name = 'music/song_form.html'
-    fields = ['title', 'artist', 'genre', 'duration', 'audio_file']
+    form_class = SongForm
     permission_required = 'music.add_song'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
+        return context
+
+    def get_success_url(self):
+        next_url = self.request.POST.get('next')
+        if next_url:
+            return next_url
+        return super().get_success_url()
 
 
 class SongUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """Modifica brano — solo Curator (permission: music.change_song)."""
     model = Song
     template_name = 'music/song_form.html'
-    fields = ['title', 'artist', 'genre', 'duration', 'audio_file']
+    form_class = SongForm
     permission_required = 'music.change_song'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
+        return context
+
+    def get_success_url(self):
+        next_url = self.request.POST.get('next')
+        if next_url:
+            return next_url
+        return super().get_success_url()
 
 
 class SongDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -66,11 +91,6 @@ class SongDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'music.delete_song'
 
 
-from django.views.generic import ListView, DetailView
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-from .models import Song, Playlist, Genre, Comment
-from .forms import CommentForm, PlaylistForm
 
 class SongDetailView(LoginRequiredMixin, DetailView):
     """Vista dettaglio brano con commenti."""
@@ -108,7 +128,7 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
     
     def dispatch(self, request, *args, **kwargs):
         comment = self.get_object()
-        if not request.user.is_staff and not request.user.is_superuser and request.user != comment.author:
+        if not request.user.is_superuser and request.user.role != 'moderator' and request.user != comment.author:
             from django.core.exceptions import PermissionDenied
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
@@ -125,7 +145,7 @@ class PlaylistListView(LoginRequiredMixin, ListView):
         return Playlist.objects.filter(owner=self.request.user)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['famous_playlists'] = Playlist.objects.filter(is_editorial=True).exclude(owner=self.request.user)
+        context['famous_playlists'] = Playlist.objects.filter(is_editorial=True).exclude(owner=self.request.user).exclude(followers=self.request.user)
         context['favorite_playlists'] = self.request.user.favorite_playlists.all()
         context['liked_songs'] = self.request.user.liked_songs.all()
         return context
@@ -155,6 +175,11 @@ class PlaylistCreateView(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
+        return context
+
     def form_valid(self, form):
         form.instance.owner = self.request.user
         response = super().form_valid(form)
@@ -166,6 +191,10 @@ class PlaylistCreateView(LoginRequiredMixin, CreateView):
             song = get_object_or_404(Song, id=song_id)
             self.object.songs.add(song)
             messages.success(self.request, f"Playlist created and '{song.title}' added successfully!")
+        
+        next_url = self.request.POST.get('next')
+        if next_url:
+            return redirect(next_url)
         return response
 
 
@@ -180,16 +209,25 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
+        return context
+
     def get_queryset(self):
-        if self.request.user.is_staff or self.request.user.is_superuser:
+        if self.request.user.role == 'curator' or self.request.user.is_superuser:
             from django.db.models import Q
             return Playlist.objects.filter(Q(owner=self.request.user) | Q(is_editorial=True))
         # L'utente normale può modificare solo le SUE playlist
         return Playlist.objects.filter(owner=self.request.user)
 
+    def get_success_url(self):
+        next_url = self.request.POST.get('next')
+        if next_url:
+            return next_url
+        return super().get_success_url()
 
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+
 
 @login_required
 def add_song_to_playlist(request, song_id, playlist_id):
@@ -223,7 +261,7 @@ class PlaylistDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('music:playlist_list')
 
     def get_queryset(self):
-        if self.request.user.is_staff or self.request.user.is_superuser:
+        if self.request.user.role == 'curator' or self.request.user.is_superuser:
             from django.db.models import Q
             return Playlist.objects.filter(Q(owner=self.request.user) | Q(is_editorial=True))
         return Playlist.objects.filter(owner=self.request.user)
@@ -238,11 +276,10 @@ def toggle_favorite_playlist(request, pk):
         playlist.followers.add(request.user)
     return redirect(request.META.get('HTTP_REFERER', 'music:playlist_list'))
 
-from django.contrib.auth.mixins import UserPassesTestMixin
 
 class CuratorRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_superuser
+        return self.request.user.role == 'curator' or self.request.user.is_superuser
 
 class GenreListView(LoginRequiredMixin, CuratorRequiredMixin, ListView):
     """Lista dei generi — solo Curator."""
@@ -268,6 +305,16 @@ class GenreDeleteView(LoginRequiredMixin, CuratorRequiredMixin, DeleteView):
     model = Genre
     template_name = 'music/genre_confirm_delete.html'
     success_url = reverse_lazy('music:genre_list')
+
+@login_required
+def toggle_like_comment(request, pk):
+    """Aggiunge o rimuove un like a un commento."""
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'music:song_list'))
 
 @login_required
 def toggle_like_song(request, pk):

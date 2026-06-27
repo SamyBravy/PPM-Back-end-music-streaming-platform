@@ -1,7 +1,11 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView, UpdateView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 
-from .forms import CustomUserCreationForm
+from .models import CustomUser, FriendRequest
+from .forms import CustomUserCreationForm, UserProfileUpdateForm
 
 
 class SignUpView(CreateView):
@@ -11,13 +15,7 @@ class SignUpView(CreateView):
     template_name = 'users/signup.html'
 
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView, UpdateView, DetailView
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import CustomUser, FriendRequest
-from .forms import UserProfileUpdateForm
+
 
 class UserProfileView(LoginRequiredMixin, TemplateView):
     """Pagina del profilo utente privato (personale)."""

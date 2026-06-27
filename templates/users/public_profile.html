@@ -6,15 +6,19 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card neo-card mb-4">
-            <div class="card-header border-bottom bg-transparent d-flex justify-content-between align-items-center">
-                <h4 class="mb-0" style="color: var(--accent-tertiary);">👤 Profile of {{ target_user.username }}</h4>
+            <div class="card-header border-bottom bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <h4 class="mb-0 text-break" style="color: var(--accent-tertiary);">👤 Profile of {{ target_user.username }}</h4>
+                <div>
                 {% if target_user.is_superuser %}
                     <span class="badge bg-danger">Admin</span>
-                {% elif target_user.is_staff %}
+                {% elif target_user.role == 'moderator' %}
+                    <span class="badge bg-success">Moderator</span>
+                {% elif target_user.role == 'curator' %}
                     <span class="badge bg-warning text-dark">Curator</span>
                 {% else %}
                     <span class="badge bg-info text-dark">Listener</span>
                 {% endif %}
+                </div>
             </div>
             <div class="card-body p-4 text-center">
                 <ul class="list-group list-group-flush mt-3">

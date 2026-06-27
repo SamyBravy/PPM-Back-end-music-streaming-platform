@@ -22,7 +22,6 @@ urlpatterns = [
     path('', include('pages.urls')),
     path('users/', include('users.urls')),
     path('music/', include('music.urls')),
-    path('api/', include('apis.urls')),
 ]
 
 from django.conf import settings

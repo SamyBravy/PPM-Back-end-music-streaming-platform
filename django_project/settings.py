@@ -37,18 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.forms',
     # App di terze parti
     'crispy_forms',
     'crispy_bootstrap5',
-    'rest_framework',
-    'rest_framework.authtoken',
     'corsheaders',
-    'django_filters',
     # App locali
     'users',
     'music',
     'pages',
-    'apis.apps.ApisConfig',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +75,8 @@ TEMPLATES = [
         },
     },
 ]
+
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
@@ -154,15 +153,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 # CORS (sviluppo locale)
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Django REST Framework
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
-}
+

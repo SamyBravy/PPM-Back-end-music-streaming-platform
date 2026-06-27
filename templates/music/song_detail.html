@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="row justify-content-center">
-	<div class="col-md-8">
+	<div class="col-lg-8 col-md-10 col-12">
 		<!-- Dettagli Brano -->
 		<div class="card neo-card mb-4" style="z-index: 10;">
 			<div class="card-body p-4">
@@ -18,6 +18,7 @@
 							title="Like">
 							{% if user in song.likes.all %}❤️{% else %}🤍{% endif %}
 						</a>
+						<span class="fs-5 text-muted ms-1">{{ song.likes.count }}</span>
 						{% endif %}
 					</div>
 					<span class="badge bg-secondary fs-6">{{ song.genre.name }}</span>
@@ -32,32 +33,24 @@
 				</div>
 				{% endif %}
 
-				{% if song.audio_file %}
-				<div class="mt-4">
-					<button class="btn btn-primary d-flex align-items-center gap-2 shadow-sm"
+				<div class="mt-4 d-flex flex-wrap flex-sm-nowrap align-items-center gap-2 gap-sm-3">
+					{% if song.audio_file %}
+					<button class="btn btn-primary d-flex align-items-center gap-2 shadow-sm px-4 py-2 flex-shrink-0"
 						onclick="playGlobalSong('{{ song.audio_file.url }}', '{{ song.title|escapejs }}', '{{ song.artist|escapejs }}', '{% url 'music:song_detail' song.pk %}')">
-						<span class="fs-4">▶️</span> <strong>Play</strong>
+						<span class="fs-5">▶️</span> <strong class="fs-6">Play</strong>
 					</button>
-				</div>
-				{% endif %}
-
-				<div class="mt-4 d-flex gap-2">
-					<a href="{% url 'music:song_list' %}" class="btn btn-outline-primary">&larr; Back to Catalog</a>
-					{% if user.is_staff %}
-					<a href="{% url 'music:song_update' song.pk %}" class="btn btn-outline-secondary">✏️ Edit</a>
 					{% endif %}
 
 					{% if user.is_authenticated %}
 					<div class="dropdown">
-						<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownAddPlaylist"
+						<button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center gap-2 shadow-sm py-2 text-nowrap flex-shrink-0" type="button" id="dropdownAddPlaylist"
 							data-bs-toggle="dropdown" aria-expanded="false">
-							➕ Add to Playlist
+							<span class="fs-6">➕</span> <span class="fs-6">Add to Playlist</span>
 						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownAddPlaylist">
+						<ul class="dropdown-menu text-center" aria-labelledby="dropdownAddPlaylist">
 							{% with av_playlists=user|available_playlists:song %}
 							{% for playlist in av_playlists %}
-							<li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id playlist.id %}">{{
-									playlist.name }}</a></li>
+							<li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id playlist.id %}">{{ playlist.name }}</a></li>
 							{% if forloop.last %}
 							<li>
 								<hr class="dropdown-divider">
@@ -70,6 +63,12 @@
 							{% endwith %}
 						</ul>
 					</div>
+					{% endif %}
+
+					{% if user.is_staff %}
+					<a href="{% url 'music:song_update' song.pk %}?next={{ request.path }}" class="btn btn-outline-secondary d-flex align-items-center gap-2 shadow-sm py-2 ms-sm-auto mt-2 mt-sm-0 text-nowrap flex-shrink-0">
+						<span class="fs-6">✏️</span> <span class="fs-6">Edit</span>
+					</a>
 					{% endif %}
 				</div>
 			</div>

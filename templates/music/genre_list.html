@@ -11,20 +11,20 @@
 <div class="card neo-card">
     <div class="table-responsive" style="overflow: visible;">
         <table class="table table-striped table-hover mb-0">
-            <thead class="table-dark">
+            <thead class="table-dark text-center">
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th class="text-end">Actions</th>
+                    <th style="width: 33.33%;">Name</th>
+                    <th style="width: 33.33%;">Description</th>
+                    <th style="width: 33.33%;">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
                 {% for genre in object_list %}
                 <tr>
                     <td class="align-middle fw-bold">{{ genre.name }}</td>
                     <td class="align-middle">{{ genre.description|default:"No description" }}</td>
-                    <td class="text-end align-middle">
-                        <div class="d-flex justify-content-end gap-2">
+                    <td class="align-middle">
+                        <div class="d-flex justify-content-center gap-2">
                             <a href="{% url 'music:genre_update' genre.pk %}" class="btn btn-sm btn-outline-secondary">✏️ Edit</a>
                             <a href="{% url 'music:genre_delete' genre.pk %}" class="btn btn-sm btn-outline-danger">🗑️ Delete</a>
                         </div>

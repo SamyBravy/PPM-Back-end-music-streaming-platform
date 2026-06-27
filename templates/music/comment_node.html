@@ -5,7 +5,11 @@
             <a href="{% url 'users:public_profile' comment.author.username %}" class="fw-bold text-decoration-none text-dark">
                 @{{ comment.author.username }}
             </a>
-            {% if comment.author.is_staff %}
+            {% if comment.author.is_superuser %}
+                <span class="badge bg-danger ms-1" {% if comment.parent %}style="font-size: 0.75em;"{% endif %}>Admin</span>
+            {% elif comment.author.role == 'moderator' %}
+                <span class="badge bg-success ms-1" {% if comment.parent %}style="font-size: 0.75em;"{% endif %}>Moderator</span>
+            {% elif comment.author.role == 'curator' %}
                 <span class="badge bg-warning text-dark ms-1" {% if comment.parent %}style="font-size: 0.75em;"{% endif %}>Curator</span>
             {% endif %}
         </h6>
@@ -13,13 +17,20 @@
     </div>
     <p class="mb-2 mt-2" {% if comment.parent %}style="font-size: 0.95em;"{% endif %}>{{ comment.text|linebreaksbr }}</p>
     
-    <div class="d-flex gap-3">
+    <div class="d-flex gap-3 align-items-center">
         {% if user.is_authenticated %}
-            <button class="btn btn-text text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#replyForm{{ comment.id }}" aria-expanded="false" aria-controls="replyForm{{ comment.id }}">
+            <div class="d-flex align-items-center">
+                <a href="{% url 'music:toggle_like_comment' comment.pk %}" class="text-decoration-none" title="Like Comment">
+                    {% if user in comment.likes.all %}❤️{% else %}🤍{% endif %}
+                </a>
+                <span class="text-muted ms-1" style="font-size: 0.9em;">{{ comment.likes.count }}</span>
+            </div>
+
+            <button class="btn btn-text text-primary p-0 border-0 bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#replyForm{{ comment.id }}" aria-expanded="false" aria-controls="replyForm{{ comment.id }}">
                 ↩️ Reply
             </button>
         {% endif %}
-        {% if user.is_staff or user.is_superuser or user == comment.author %}
+        {% if user.role == 'moderator' or user.is_superuser or user == comment.author %}
             <form action="{% url 'music:comment_delete' comment.pk %}" method="post" class="d-inline">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-text text-danger" title="Delete Comment">

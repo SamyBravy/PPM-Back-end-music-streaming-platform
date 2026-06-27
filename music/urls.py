@@ -20,11 +20,13 @@ from .views import (
     GenreDeleteView,
     toggle_favorite_playlist,
     toggle_like_song,
+    toggle_like_comment,
 )
 
 app_name = 'music'
 
 urlpatterns = [
+    path('comments/<int:pk>/like/', toggle_like_comment, name='toggle_like_comment'),
     path('songs/', SongListView.as_view(), name='song_list'),
     path('songs/<int:pk>/', SongDetailView.as_view(), name='song_detail'),
     path('songs/add/', SongCreateView.as_view(), name='song_create'),
