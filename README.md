@@ -34,9 +34,14 @@ The system uses a custom user model (`CustomUser`) with predefined roles that re
 
 ### Role: **Curator** (Staff Member)
 - All the features of the Listener.
-- Insertion, modification, and deletion (CRUD) of music tracks from the catalog (via protected Class-Based Views).
-- Management through the administration panel (`/admin`).
-- Destructive or write operations are protected on the backend by the `PermissionRequiredMixin`.
+- Insertion, modification, and deletion (CRUD) of music tracks from the catalog (via protected Class-Based Views on the frontend).
+- Management of musical genres directly from the frontend.
+- Destructive or write operations are protected on the backend by the `PermissionRequiredMixin` and `UserPassesTestMixin`.
+
+### Role: **Moderator** (Staff Member)
+- All the features of the Listener.
+- Full control over platform comments (ability to delete any comment made by any user to maintain community guidelines).
+- Destructive operations are protected on the backend by specific dispatch checks in the Views.
 
 ---
 
