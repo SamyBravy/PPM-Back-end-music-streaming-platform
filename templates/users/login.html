@@ -13,6 +13,9 @@
             <div class="card-body p-4">
                 <form method="post" action="{% url 'users:login' %}">
                     {% csrf_token %}
+                    {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    {% endif %}
                     {{ form|crispy }}
                     <div class="d-grid mt-4">
                         <button type="submit" class="btn btn-primary btn-lg">Login</button>

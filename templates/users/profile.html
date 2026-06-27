@@ -37,6 +37,11 @@
                         <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
                     </li>
                     {% endif %}
+                    {% if user.email %}
+                    <li class="list-group-item">
+                        <strong>Email:</strong> {{ user.email }}
+                    </li>
+                    {% endif %}
                     {% if user.birth_date %}
                     <li class="list-group-item">
                         <strong>Date of Birth:</strong> {{ user.birth_date|date:"M d, Y" }}

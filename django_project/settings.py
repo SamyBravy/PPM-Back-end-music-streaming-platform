@@ -143,7 +143,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Redirect dopo Login / Logout
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'music:song_list'
+LOGIN_REDIRECT_URL = 'pages:home'
 LOGOUT_REDIRECT_URL = 'pages:home'
 
 # Crispy Forms
