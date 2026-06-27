@@ -20,7 +20,7 @@
                 {% if request.user in playlist.followers.all %}⭐ Favorited{% else %}☆ Add to Favorites{% endif %}
             </a>
         {% endif %}
-        {% if playlist.owner == request.user or request.user.is_staff %}
+        {% if playlist.owner == request.user or request.user.role == 'curator' or request.user.is_superuser %}
             <a href="{% url 'music:playlist_update' playlist.pk %}?next={{ request.path }}" class="btn btn-outline-secondary">✏️ Edit</a>
         {% endif %}
         {% if playlist.owner == request.user %}
