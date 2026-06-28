@@ -9,6 +9,11 @@ from django.db.models import Q
 from .models import Song, Playlist, Genre, Comment
 from .forms import CommentForm, PlaylistForm, SongForm
 
+class CuratorRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.role == 'curator' or self.request.user.is_superuser
+
+
 class SongListView(LoginRequiredMixin, ListView):
     """Vista catalogo brani — protetta da login."""
     model = Song
@@ -45,12 +50,11 @@ class SongListView(LoginRequiredMixin, ListView):
         return context
 
 
-class SongCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """Creazione brano — solo Curator (permission: music.add_song)."""
+class SongCreateView(LoginRequiredMixin, CuratorRequiredMixin, CreateView):
+    """Creazione brano — solo Curator."""
     model = Song
     template_name = 'music/song_form.html'
     form_class = SongForm
-    permission_required = 'music.add_song'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,12 +68,11 @@ class SongCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return super().get_success_url()
 
 
-class SongUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    """Modifica brano — solo Curator (permission: music.change_song)."""
+class SongUpdateView(LoginRequiredMixin, CuratorRequiredMixin, UpdateView):
+    """Modifica brano — solo Curator."""
     model = Song
     template_name = 'music/song_form.html'
     form_class = SongForm
-    permission_required = 'music.change_song'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -83,12 +86,11 @@ class SongUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return super().get_success_url()
 
 
-class SongDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    """Eliminazione brano — solo Curator (permission: music.delete_song)."""
+class SongDeleteView(LoginRequiredMixin, CuratorRequiredMixin, DeleteView):
+    """Eliminazione brano — solo Curator."""
     model = Song
     template_name = 'music/song_confirm_delete.html'
     success_url = reverse_lazy('music:song_list')
-    permission_required = 'music.delete_song'
 
 
 
@@ -277,9 +279,6 @@ def toggle_favorite_playlist(request, pk):
     return redirect(request.META.get('HTTP_REFERER', 'music:playlist_list'))
 
 
-class CuratorRequiredMixin(UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.role == 'curator' or self.request.user.is_superuser
 
 class GenreListView(LoginRequiredMixin, CuratorRequiredMixin, ListView):
     """Lista dei generi — solo Curator."""
