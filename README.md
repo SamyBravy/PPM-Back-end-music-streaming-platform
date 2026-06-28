@@ -8,7 +8,7 @@
 **Student:** Samuele Dell'Erba  
 **Chosen Project Type:** Full-Stack Web Application - Music Streaming Service  
 **Framework Used:** Django 5.x (with Bootstrap 5 & Vanilla JS)  
-**Deployment Link:** [INSERT DEPLOYMENT LINK HERE]  
+**Deployment Link:** https://samybravy15.pythonanywhere.com/
 
 ---
 
