@@ -8,15 +8,12 @@
 
         <div class="card neo-card mb-4">
             <div class="card-header border-bottom bg-transparent d-flex justify-content-between align-items-center">
-                <h4 class="mb-0" style="color: var(--accent-tertiary);">👤 Your Personal Profile</h4>
+                <h4 class="mb-0" style="color: var(--accent-tertiary);">Your Personal Profile</h4>
             </div>
             <div class="card-body p-4">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
                     <h2 class="mb-0 text-break">
-                        {{ user.profile_icon }} {{ user.first_name|default:"" }} {{ user.last_name|default:"" }}
-                        {% if not user.first_name and not user.last_name %}
-                            {{ user.username }}
-                        {% endif %}
+                        {{ user.profile_icon }} {{ user.username }}
                     </h2>
                     <div>
                     {% if user.is_superuser %}
@@ -63,7 +60,7 @@
                         ✏️ Edit Personal Details
                     </a>
                     <a href="{% url 'users:public_profile' request.user.username %}" class="btn btn-outline-primary">
-                        👁️ View My Public Profile
+                        View My Public Profile
                     </a>
                 </div>
             </div>
@@ -98,7 +95,7 @@
 
         <div class="card neo-card mt-4">
             <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
-                <h5 class="mb-0" style="color: var(--accent-tertiary);">👥 Your Friends ({{ friends_list.count }})</h5>
+                <h5 class="mb-0" style="color: var(--accent-tertiary);">Your Friends ({{ friends_list.count }})</h5>
             </div>
             <div class="card-body">
                 <!-- Form Aggiungi Amico -->
@@ -107,7 +104,7 @@
                     <div class="input-group">
                         <span class="input-group-text bg-transparent text-primary border-primary">@</span>
                         <input type="text" name="username" class="form-control border-primary" placeholder="Enter exact username to add..." required>
-                        <button type="submit" class="btn btn-primary">➕ Send Request</button>
+                        <button type="submit" class="btn btn-primary">Send Request</button>
                     </div>
                 </form>
 
@@ -122,7 +119,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted mb-0">You don't have any friends yet. Search for someone by username or explore the comments to add people!</p>
+                    <p class="text-muted mb-0">You don't have any friends yet</p>
                 {% endif %}
             </div>
         </div>

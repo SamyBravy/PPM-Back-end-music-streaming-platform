@@ -20,17 +20,17 @@ class CustomUser(AbstractUser):
     friends = models.ManyToManyField('self', blank=True)
 
     ICON_CHOICES = [
-        ('👤', 'Default (👤)'),
-        ('🐶', 'Dog (🐶)'),
-        ('🐱', 'Cat (🐱)'),
-        ('🦊', 'Fox (🦊)'),
-        ('🐯', 'Tiger (🐯)'),
-        ('🐼', 'Panda (🐼)'),
-        ('🐰', 'Rabbit (🐰)'),
-        ('👽', 'Alien (👽)'),
-        ('🤖', 'Robot (🤖)'),
-        ('👻', 'Ghost (👻)'),
-        ('🤠', 'Cowboy (🤠)'),
+        ('👤', '👤'),
+        ('🐶', '🐶'),
+        ('🐱', '🐱'),
+        ('🦊', '🦊'),
+        ('🐯', '🐯'),
+        ('🐼', '🐼'),
+        ('🐰', '🐰'),
+        ('👽', '👽'),
+        ('🤖', '🤖'),
+        ('👻', '👻'),
+        ('🤠', '🤠'),
     ]
     profile_icon = models.CharField(max_length=10, choices=ICON_CHOICES, default='👤')
 

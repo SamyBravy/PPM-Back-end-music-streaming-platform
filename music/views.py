@@ -5,9 +5,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 
 from .models import Song, Playlist, Genre, Comment
 from .forms import CommentForm, PlaylistForm, SongForm
+from .mixins import NextUrlMixin
 
 class CuratorRequiredMixin(UserPassesTestMixin):
     def test_func(self):
@@ -50,40 +53,18 @@ class SongListView(LoginRequiredMixin, ListView):
         return context
 
 
-class SongCreateView(LoginRequiredMixin, CuratorRequiredMixin, CreateView):
+class SongCreateView(LoginRequiredMixin, CuratorRequiredMixin, NextUrlMixin, CreateView):
     """Creazione brano — solo Curator."""
     model = Song
     template_name = 'music/song_form.html'
     form_class = SongForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
-        return context
 
-    def get_success_url(self):
-        next_url = self.request.POST.get('next')
-        if next_url:
-            return next_url
-        return super().get_success_url()
-
-
-class SongUpdateView(LoginRequiredMixin, CuratorRequiredMixin, UpdateView):
+class SongUpdateView(LoginRequiredMixin, CuratorRequiredMixin, NextUrlMixin, UpdateView):
     """Modifica brano — solo Curator."""
     model = Song
     template_name = 'music/song_form.html'
     form_class = SongForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
-        return context
-
-    def get_success_url(self):
-        next_url = self.request.POST.get('next')
-        if next_url:
-            return next_url
-        return super().get_success_url()
 
 
 class SongDeleteView(LoginRequiredMixin, CuratorRequiredMixin, DeleteView):
@@ -131,7 +112,6 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         comment = self.get_object()
         if not request.user.is_superuser and request.user.role != 'moderator' and request.user != comment.author:
-            from django.core.exceptions import PermissionDenied
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -158,7 +138,6 @@ class PlaylistDetailView(LoginRequiredMixin, DetailView):
     template_name = 'music/playlist_detail.html'
 
     def get_queryset(self):
-        from django.db.models import Q
         return Playlist.objects.filter(
             Q(owner=self.request.user) | 
             Q(is_editorial=True) | 
@@ -166,7 +145,7 @@ class PlaylistDetailView(LoginRequiredMixin, DetailView):
         ).distinct()
 
 
-class PlaylistCreateView(LoginRequiredMixin, CreateView):
+class PlaylistCreateView(LoginRequiredMixin, NextUrlMixin, CreateView):
     """Creazione playlist — per qualsiasi utente autenticato."""
     model = Playlist
     template_name = 'music/playlist_form.html'
@@ -177,19 +156,11 @@ class PlaylistCreateView(LoginRequiredMixin, CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
-        return context
-
     def form_valid(self, form):
         form.instance.owner = self.request.user
         response = super().form_valid(form)
         song_id = self.request.GET.get('add_song_id')
         if song_id:
-            from .models import Song
-            from django.shortcuts import get_object_or_404
-            from django.contrib import messages
             song = get_object_or_404(Song, id=song_id)
             self.object.songs.add(song)
             messages.success(self.request, f"Playlist created and '{song.title}' added successfully!")
@@ -200,7 +171,7 @@ class PlaylistCreateView(LoginRequiredMixin, CreateView):
         return response
 
 
-class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
+class PlaylistUpdateView(LoginRequiredMixin, NextUrlMixin, UpdateView):
     """Modifica di una playlist (es. cambiarne il nome o renderla pubblica/privata)."""
     model = Playlist
     template_name = 'music/playlist_form.html'
@@ -211,30 +182,16 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['next_url'] = self.request.POST.get('next') or self.request.GET.get('next') or self.request.META.get('HTTP_REFERER', '')
-        return context
-
     def get_queryset(self):
         if self.request.user.role == 'curator' or self.request.user.is_superuser:
-            from django.db.models import Q
             return Playlist.objects.filter(Q(owner=self.request.user) | Q(is_editorial=True))
         # L'utente normale può modificare solo le SUE playlist
         return Playlist.objects.filter(owner=self.request.user)
 
-    def get_success_url(self):
-        next_url = self.request.POST.get('next')
-        if next_url:
-            return next_url
-        return super().get_success_url()
 
 
-
-@login_required
 def add_song_to_playlist(request, song_id, playlist_id):
     """Aggiunge un brano a una playlist specifica, previa verifica della ownership."""
-    from django.contrib import messages
     song = get_object_or_404(Song, id=song_id)
     playlist = get_object_or_404(Playlist, id=playlist_id, owner=request.user)
     
@@ -264,7 +221,6 @@ class PlaylistDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         if self.request.user.role == 'curator' or self.request.user.is_superuser:
-            from django.db.models import Q
             return Playlist.objects.filter(Q(owner=self.request.user) | Q(is_editorial=True))
         return Playlist.objects.filter(owner=self.request.user)
 

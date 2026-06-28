@@ -64,9 +64,10 @@ class HomePageView(TemplateView):
                     playlists__owner=user
                 ).exclude(likes=user).order_by('?')[:3]
             else:
-                recommended = Song.objects.annotate(likes_count=Count('likes')).order_by('?')[:3]
+                recommended = Song.objects.annotate(likes_count=Count('likes')).order_by('-created_at')[:3]
         
         context['recommended_songs'] = recommended
+        context['latest_additions'] = Song.objects.annotate(likes_count=Count('likes')).order_by('-created_at')[:3]
         context['trending_songs'] = Song.objects.annotate(likes_count=Count('likes')).order_by('-likes_count')[:4]
         if user.is_authenticated:
             context['user_playlists'] = Playlist.objects.filter(owner=user)

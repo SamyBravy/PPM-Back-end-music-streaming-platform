@@ -11,12 +11,35 @@
 		<div class="card neo-card">
 			<div class="card-body p-4">
 				<h2 class="card-title mb-4" style="color: var(--accent-tertiary);">
-					{% if object %}✏️ Edit Playlist{% else %}➕ Create New Playlist{% endif %}
+					{% if object %}✏️ Edit Playlist{% else %}Create New Playlist{% endif %}
 				</h2>
 				<form method="post">
 					{% csrf_token %}
 					<input type="hidden" name="next" value="{{ next_url|default:'' }}">
-					{{ form|crispy }}
+					<div class="mb-3">
+						{{ form.name|as_crispy_field }}
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label fw-semibold">Visibility</label>
+						<div class="visibility-picker" role="radiogroup" aria-label="Playlist visibility">
+							{% for value, label in form.visibility.field.choices %}
+								<label class="visibility-picker-option">
+									<input
+										class="visibility-picker-input"
+										type="radio"
+										name="{{ form.visibility.html_name }}"
+										value="{{ value }}"
+										{% if form.visibility.value == value or form.visibility.field.initial == value %}checked{% endif %}
+									>
+									<span>{{ label }}</span>
+								</label>
+							{% endfor %}
+						</div>
+						{% if form.visibility.errors %}
+							<div class="invalid-feedback d-block">{{ form.visibility.errors|striptags }}</div>
+						{% endif %}
+					</div>
 					<div class="mt-3">
 						<button type="submit" class="btn btn-primary">
 							{% if object %}Save Changes{% else %}Create Playlist{% endif %}
@@ -31,24 +54,4 @@
 	</div>
 </div>
 
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		const editorialCheckbox = document.getElementById('id_is_editorial');
-		const publicCheckbox = document.getElementById('id_is_public');
-
-		if (editorialCheckbox && publicCheckbox) {
-			editorialCheckbox.addEventListener('change', function () {
-				if (this.checked) {
-					publicCheckbox.checked = true;
-				}
-			});
-
-			publicCheckbox.addEventListener('change', function () {
-				if (!this.checked) {
-					editorialCheckbox.checked = false;
-				}
-			});
-		}
-	});
-</script>
 {% endblock %}

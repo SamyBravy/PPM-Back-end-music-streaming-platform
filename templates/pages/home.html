@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="text-center py-5">
-	<h1 class="display-4 fw-bold" style="color: var(--accent-primary);">🎵 Welcome to BravyStream</h1>
+	<h1 class="display-4 fw-bold" style="color: var(--accent-primary);">Welcome to BravyStream</h1>
 	<p class="lead text-muted mt-3">
 		Explore our music catalog, create your own playlists and discover new songs.
 	</p>
@@ -19,129 +19,43 @@
 	</div>
 </div>
 
-{% if recommended_songs %}
+{% if user.is_authenticated and user.playlists.exists and recommended_songs %}
 <div class="mt-2 mb-5">
-	<h3 class="mb-4" style="color: var(--accent-primary);">
-		{% if user.is_authenticated and user.playlists.exists %}
-		🎯 Recommended for you
-		{% else %}
-		🔥 Latest additions
-		{% endif %}
+	<h3 class="mb-4" style="color: var(--accent-tertiary);">
+		Recommended for you
 	</h3>
 	<div class="row">
 		{% for song in recommended_songs %}
 		<div class="col-md-4 mb-4">
-			<div class="card h-100 border-0 neo-card">
-				<div class="card-body text-center d-flex flex-column p-4">
-					<h5 class="card-title">
-						<a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none fw-bold"
-							style="color: var(--accent-tertiary);">
-							{{ song.title }}
-						</a>
-					</h5>
-					<h6 class="card-subtitle mb-2 text-muted">{{ song.artist }}</h6>
-
-					<div class="mb-2">
-						<span class="badge bg-secondary">{{ song.genre.name }}</span>
-						<small class="text-muted ms-2">{{ song.duration }}</small>
-					</div>
-
-					<div class="mb-2">
-                        <span class="badge bg-danger">❤️ {{ song.likes_count }} Like{{ song.likes_count|pluralize }}</span>
-					</div>
-
-					{% if user.is_authenticated %}
-					<div class="mt-3">
-						<div class="dropdown w-100">
-							<button class="btn btn-sm btn-outline-primary dropdown-toggle w-100 text-truncate"
-								type="button" id="dropdownHomeAdd{{ song.id }}" data-bs-toggle="dropdown"
-								aria-expanded="false">
-								➕ Add to Playlist
-							</button>
-							<ul class="dropdown-menu text-center w-100" aria-labelledby="dropdownHomeAdd{{ song.id }}">
-								{% with av_playlists=user|available_playlists:song %}
-								{% for playlist in av_playlists %}
-								<li><a class="dropdown-item"
-										href="{% url 'music:add_to_playlist' song.id playlist.id %}">{{ playlist.name }}</a></li>
-								{% if forloop.last %}
-								<li>
-									<hr class="dropdown-divider">
-								</li>
-								{% endif %}
-								{% endfor %}
-								<li><a class="dropdown-item fw-bold" style="color: var(--accent-primary);"
-										href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">➕ Create
-										new</a></li>
-								{% endwith %}
-							</ul>
-						</div>
-					</div>
-					{% endif %}
-				</div>
-			</div>
+			{% include "music/partials/song_card.html" with song=song dropdown_prefix="Recommended" %}
 		</div>
 		{% endfor %}
 	</div>
 </div>
 {% endif %}
 
+<div class="mt-2 mb-5">
+	<h3 class="mb-4" style="color: var(--accent-primary);">
+		Latest additions
+	</h3>
+	<div class="row">
+		{% for song in latest_additions %}
+		<div class="col-md-4 mb-4">
+			{% include "music/partials/song_card.html" with song=song dropdown_prefix="Home" %}
+		</div>
+		{% endfor %}
+	</div>
+</div>
+
 {% if trending_songs %}
 <div class="mt-2 mb-5">
 	<h3 class="mb-4" style="color: var(--accent-tertiary);">
-		📈 Trending Songs
+		Trending Songs
 	</h3>
 	<div class="row">
 		{% for song in trending_songs %}
 		<div class="col-md-3 mb-4">
-			<div class="card h-100 border-0 neo-card">
-				<div class="card-body text-center d-flex flex-column p-4">
-					<h5 class="card-title">
-						<a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none fw-bold"
-							style="color: var(--text-primary);">
-							{{ song.title }}
-						</a>
-					</h5>
-					<h6 class="card-subtitle mb-2 text-muted">{{ song.artist }}</h6>
-
-					<div class="mb-2">
-						<span class="badge bg-secondary">{{ song.genre.name }}</span>
-						<small class="text-muted ms-2">{{ song.duration }}</small>
-					</div>
-
-					<div class="mb-2">
-						<span class="badge bg-danger">❤️ {{ song.likes_count }} Like{{ song.likes_count|pluralize }}</span>
-					</div>
-
-					{% if user.is_authenticated %}
-					<div class="mt-3">
-						<div class="dropdown w-100">
-							<button class="btn btn-sm btn-outline-primary dropdown-toggle w-100 text-truncate"
-								type="button" id="dropdownTrendingAdd{{ song.id }}" data-bs-toggle="dropdown"
-								aria-expanded="false">
-								➕ Add to Playlist
-							</button>
-							<ul class="dropdown-menu text-center w-100"
-								aria-labelledby="dropdownTrendingAdd{{ song.id }}">
-								{% with av_playlists=user|available_playlists:song %}
-								{% for playlist in av_playlists %}
-								<li><a class="dropdown-item"
-										href="{% url 'music:add_to_playlist' song.id playlist.id %}">{{ playlist.name }}</a></li>
-								{% if forloop.last %}
-								<li>
-									<hr class="dropdown-divider">
-								</li>
-								{% endif %}
-								{% endfor %}
-								<li><a class="dropdown-item fw-bold" style="color: var(--accent-primary);"
-										href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">➕ Create
-										new</a></li>
-								{% endwith %}
-							</ul>
-						</div>
-					</div>
-					{% endif %}
-				</div>
-			</div>
+			{% include "music/partials/song_card.html" with song=song dropdown_prefix="Trending" %}
 		</div>
 		{% endfor %}
 	</div>

@@ -3,6 +3,8 @@ from django.views.generic import CreateView, TemplateView, UpdateView, DetailVie
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.contrib import messages
 
 from .models import CustomUser, FriendRequest
 from .forms import CustomUserCreationForm, UserProfileUpdateForm
@@ -61,7 +63,6 @@ class PublicProfileView(LoginRequiredMixin, DetailView):
         context['is_friend'] = is_friend
         
         if is_self:
-            from django.db.models import Q
             context['public_playlists'] = target_user.playlists.filter(Q(is_public=True) | Q(is_editorial=True)).distinct()
         elif is_friend:
             context['public_playlists'] = target_user.playlists.filter(is_public=True)
@@ -80,7 +81,6 @@ class PublicProfileView(LoginRequiredMixin, DetailView):
 
 @login_required
 def send_friend_request_by_username(request):
-    from django.contrib import messages
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         if not username:
@@ -95,7 +95,7 @@ def send_friend_request_by_username(request):
                 messages.info(request, f"You are already friends with {username}.")
             else:
                 FriendRequest.objects.get_or_create(sender=request.user, receiver=target_user)
-                messages.success(request, f"Friend request sent to {username}.")
+                messages.success(request, f"Friend request sent to {username}")
         except CustomUser.DoesNotExist:
             messages.error(request, f"The user '{username}' does not exist.")
             
@@ -129,7 +129,6 @@ def reject_friend_request(request, request_id):
 
 @login_required
 def remove_friend(request, username):
-    from django.contrib import messages
     target_user = get_object_or_404(CustomUser, username=username)
     if request.method == 'POST':
         if request.user.friends.filter(pk=target_user.pk).exists():

@@ -8,7 +8,7 @@
         <div class="mb-2" id="current_{{ widget.name }}">
             <span class="text-muted">Current audio:</span>
             <a href="#" onclick="document.getElementById('{{ widget.attrs.id }}').click(); return false;" class="text-primary fw-bold text-decoration-none" title="Click to select a different audio file">
-                🎵 <span id="current_{{ widget.name }}_text">{% if widget.is_initial %}{{ widget.value.name }}{% endif %}</span> <small class="text-muted ms-1">(Click to change)</small>
+                <span id="current_{{ widget.name }}_text">{% if widget.is_initial %}{{ widget.value.name }}{% endif %}</span> <small class="text-muted ms-1">(Click to change)</small>
             </a>
         </div>
         
@@ -17,7 +17,7 @@
             <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" style="display: none;" {% if widget.attrs.disabled %} disabled{% endif %} {% if widget.attrs.data_cleared %}checked{% endif %}>
             {% endif %}
             <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeAudio('{{ widget.name }}', '{% if not widget.required %}{{ widget.checkbox_id }}{% endif %}', '{{ widget.attrs.id }}')">
-                🗑️ Remove Audio
+                Remove Audio
             </button>
         </div>
     </div>

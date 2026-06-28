@@ -5,10 +5,10 @@
 
 {% block music_content %}
 <div class="d-flex justify-content-between align-items-center">
-    <h2>🎶 Music Catalog</h2>
+    <h2>Music Catalog</h2>
     {% if user.role == 'curator' or user.is_superuser %}
         <div class="d-flex gap-2">
-            <a href="{% url 'music:genre_list' %}" class="btn btn-outline-secondary">🎛️ Manage Genres</a>
+            <a href="{% url 'music:genre_list' %}" class="btn btn-outline-secondary">Manage Genres</a>
             <a href="{% url 'music:song_create' %}" class="btn btn-success">+ Add Song</a>
         </div>
     {% endif %}
@@ -85,7 +85,7 @@
                                                 <li><hr class="dropdown-divider"></li>
                                             {% endif %}
                                         {% endfor %}
-                                        <li><a class="dropdown-item fw-bold" style="color: var(--accent-primary);" href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">➕ Create new</a></li>
+                                        <li><a class="dropdown-item fw-bold" style="color: var(--accent-primary);" href="{% url 'music:playlist_create' %}?add_song_id={{ song.id }}">+ Create new</a></li>
                                     {% endwith %}
                                 </ul>
                             </div>

@@ -41,24 +41,68 @@ class CommentForm(forms.ModelForm):
         }
 
 class PlaylistForm(forms.ModelForm):
+    VISIBILITY_CHOICES = (
+        ('private', 'Private'),
+        ('public', 'Public'),
+        ('editorial', 'Editorial'),
+    )
+
+    visibility = forms.ChoiceField(
+        choices=VISIBILITY_CHOICES,
+        widget=forms.RadioSelect,
+        required=True,
+    )
+
     class Meta:
         model = Playlist
-        fields = ['name', 'is_public', 'is_editorial']
+        fields = ['name']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if user and user.role != 'curator' and not user.is_superuser:
-            self.fields.pop('is_editorial')
+
+        self.user = user
+
+        if user and (user.role == 'curator' or user.is_superuser):
+            self.fields['visibility'].choices = self.VISIBILITY_CHOICES
         else:
-            self.fields['is_editorial'].label = "🌟 Editorial"
-        
-        self.fields['is_public'].label = "👥 Public"
+            self.fields['visibility'].choices = self.VISIBILITY_CHOICES[:2]
+
+        if self.instance and self.instance.pk:
+            if self.instance.is_editorial:
+                self.fields['visibility'].initial = 'editorial'
+            elif self.instance.is_public:
+                self.fields['visibility'].initial = 'public'
+            else:
+                self.fields['visibility'].initial = 'private'
+        else:
+            self.fields['visibility'].initial = 'private'
 
     def clean(self):
         cleaned_data = super().clean()
-        is_editorial = cleaned_data.get('is_editorial')
-        if is_editorial:
+        visibility = cleaned_data.get('visibility')
+        if visibility == 'editorial':
+            if not self.user or (self.user.role != 'curator' and not self.user.is_superuser):
+                raise forms.ValidationError("You are not allowed to create editorial playlists.")
             cleaned_data['is_public'] = True
+            cleaned_data['is_editorial'] = True
+        elif visibility == 'public':
+            cleaned_data['is_public'] = True
+            cleaned_data['is_editorial'] = False
+        else:
+            cleaned_data['is_public'] = False
+            cleaned_data['is_editorial'] = False
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        visibility = self.cleaned_data.get('visibility')
+
+        instance.is_editorial = visibility == 'editorial'
+        instance.is_public = visibility in ('public', 'editorial')
+
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
 

@@ -5,13 +5,13 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center">
     <h2>
-        🎵 Playlist: {{ playlist.name }}
+        Playlist: {{ playlist.name }}
         {% if playlist.is_editorial %}
-            <span class="badge bg-warning text-dark fs-6 align-middle">🌟 Editorial</span>
+            <span class="badge bg-warning text-dark fs-6 align-middle">Editorial</span>
         {% elif playlist.is_public %}
-            <span class="badge bg-success fs-6 align-middle">👥 Friends Only</span>
+            <span class="badge bg-success fs-6 align-middle">Public</span>
         {% else %}
-            <span class="badge bg-secondary fs-6 align-middle">🔒 Private</span>
+            <span class="badge bg-secondary fs-6 align-middle">Private</span>
         {% endif %}
     </h2>
     <div class="d-flex gap-2">
@@ -26,7 +26,6 @@
         {% if playlist.owner == request.user %}
             <a href="{% url 'music:playlist_delete' playlist.pk %}" class="btn btn-outline-danger">Delete Playlist</a>
         {% endif %}
-        <a href="{% url 'music:playlist_list' %}" class="btn btn-outline-primary">&larr; Back to Playlists</a>
     </div>
 </div>
 <hr>

@@ -17,7 +17,7 @@ The project includes an authentication system, role differentiation (Listener an
 To make the application more realistic and engaging, the following extra features have been added:
 - **Smart Recommendations:** The homepage suggests new tracks by analyzing the user's favorite "Genre" and "Artist" in real-time (based on "Likes" and songs in their playlists), automatically hiding already known tracks.
 - **Social / Community Features:** Users can send **friend requests** (which can be accepted or rejected), write **comments** and nested replies under tracks, and view other users' public profiles.
-- **Advanced Playlist Management:** Playlists can be set as Private, "Friends Only", or Editorial (Staff). 
+- **Advanced Playlist Management:** Playlists can be set as Private, Public (friends only), or Editorial (Staff). 
 - **Audio File Upload:** It is possible to upload real audio files (`.mp3`, `.wav`, etc.). A dedicated JavaScript script automatically extracts the duration from the file in milliseconds before saving it to the database, preventing manual input errors.
 - **Dynamic Interface and Dark Mode:** The design uses a custom "Neo-Brutalism" aesthetic, featuring a persistent **Dark/Light mode** system saved in the browser's LocalStorage.
 
@@ -120,7 +120,7 @@ As required by the specifications for Full-Stack projects, here is a short scena
 3. **Moderator Workflow (Community Management):**
    - **Logout** and log in as `moderator_demo` (password: `moderator12345`).
    - Navigate to any song in the **Music Catalog**.
-   - **Verify:** You can see the red "🗑️ Delete" button on *all* user comments, allowing you to moderate the community.
+   - **Verify:** You can see the red "Delete" button on *all* user comments, allowing you to moderate the community.
    - Log out.
 
 4. **Admin Workflow (System Management):**

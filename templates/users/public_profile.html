@@ -7,7 +7,7 @@
     <div class="col-md-8">
         <div class="card neo-card mb-4">
             <div class="card-header border-bottom bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <h4 class="mb-0 text-break" style="color: var(--accent-tertiary);">👤 Profile of {{ target_user.username }}</h4>
+                <h4 class="mb-0 text-break" style="color: var(--accent-tertiary);">Profile of {{ target_user.username }}</h4>
                 <div>
                 {% if target_user.is_superuser %}
                     <span class="badge bg-danger">Admin</span>
@@ -34,17 +34,17 @@
                         {% if is_friend %}
                             <form action="{% url 'users:remove_friend' target_user.username %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn btn-success" disabled>✅ Friends</button>
+                                <button class="btn btn-success" disabled>Friends</button>
                                 <button type="submit" class="btn btn-outline-danger ms-2" onclick="return confirm('Are you sure you want to remove {{ target_user.username }} from your friends?');">❌ Remove Friend</button>
                             </form>
                         {% elif request_sent %}
-                            <button class="btn btn-secondary" disabled>⏳ Request Sent</button>
+                            <button class="btn btn-secondary" disabled>Request Sent</button>
                         {% elif request_received %}
-                            <span class="text-muted">They sent you a request. Check your profile.</span>
+                            <span class="text-muted">They sent you a request, check your profile</span>
                         {% else %}
                             <form action="{% url 'users:send_request' target_user.username %}" method="post" class="d-inline">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-primary">➕ Add Friend</button>
+                                <button type="submit" class="btn btn-primary">+ Add Friend</button>
                             </form>
                         {% endif %}
                     {% endif %}
@@ -66,11 +66,11 @@
                                 {{ playlist.name }}
                             </a>
                             {% if playlist.is_editorial %}
-                                <span class="badge bg-warning text-dark me-1">🌟 Editorial</span>
+                                <span class="badge bg-warning text-dark me-1">Editorial</span>
                             {% elif playlist.is_public %}
-                                <span class="badge bg-success me-1">👥 Friends Only</span>
+                                <span class="badge bg-success me-1">Public</span>
                             {% else %}
-                                <span class="badge bg-secondary me-1">🔒 Private</span>
+                                <span class="badge bg-secondary me-1">Private</span>
                             {% endif %}
                             <span class="badge bg-light text-dark border rounded-pill">
                                 {{ playlist.songs.count }} song{{ playlist.songs.count|pluralize }}
@@ -90,7 +90,7 @@
 
         <div class="card neo-card mt-4">
             <div class="card-header bg-transparent border-bottom">
-                <h5 class="mb-0" style="color: var(--accent-tertiary);">💬 Recent Activity (Comments)</h5>
+                <h5 class="mb-0" style="color: var(--accent-tertiary);">Recent Activity</h5>
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
@@ -106,7 +106,7 @@
                     </li>
                     {% empty %}
                     <li class="list-group-item p-4 text-center text-muted">
-                        {{ target_user.username }} has not commented on any songs yet.
+                        {{ target_user.username }} has no recent activity
                     </li>
                     {% endfor %}
                 </ul>

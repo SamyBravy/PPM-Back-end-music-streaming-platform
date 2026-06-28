@@ -57,7 +57,7 @@ def seed():
     listener, _ = User.objects.get_or_create(username='listener_demo', defaults={
         'email': 'listener@example.com',
         'role': 'listener',
-        'profile_icon': '🎧'
+        'profile_icon': '👤'
     })
     listener.set_password('listener12345')
     listener.save()
@@ -142,7 +142,7 @@ def seed():
 
     # Playlist Privata di Listener
     private_pl, _ = Playlist.objects.get_or_create(
-        name="Secret Guilty Pleasures", owner=listener, defaults={'is_public': False}
+        name="Secret Pleasures", owner=listener, defaults={'is_public': False}
     )
     private_pl.songs.set(all_songs[8:10])
     
