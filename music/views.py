@@ -18,7 +18,6 @@ class CuratorRequiredMixin(UserPassesTestMixin):
 
 
 class SongListView(LoginRequiredMixin, ListView):
-    """Vista catalogo brani — protetta da login."""
     model = Song
     template_name = 'music/song_list.html'
 
@@ -58,21 +57,18 @@ class SongListView(LoginRequiredMixin, ListView):
 
 
 class SongCreateView(LoginRequiredMixin, CuratorRequiredMixin, NextUrlMixin, CreateView):
-    """Creazione brano — solo Curator."""
     model = Song
     template_name = 'music/song_form.html'
     form_class = SongForm
 
 
 class SongUpdateView(LoginRequiredMixin, CuratorRequiredMixin, NextUrlMixin, UpdateView):
-    """Modifica brano — solo Curator."""
     model = Song
     template_name = 'music/song_form.html'
     form_class = SongForm
 
 
 class SongDeleteView(LoginRequiredMixin, CuratorRequiredMixin, DeleteView):
-    """Eliminazione brano — solo Curator."""
     model = Song
     template_name = 'music/song_confirm_delete.html'
     success_url = reverse_lazy('music:song_list')
@@ -80,7 +76,6 @@ class SongDeleteView(LoginRequiredMixin, CuratorRequiredMixin, DeleteView):
 
 
 class SongDetailView(LoginRequiredMixin, DetailView):
-    """Vista dettaglio brano con commenti."""
     model = Song
     template_name = 'music/song_detail.html'
 
@@ -110,7 +105,6 @@ class SongDetailView(LoginRequiredMixin, DetailView):
         return self.render_to_response(self.get_context_data(form=form))
 
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
-    """Eliminazione commento — solo staff (moderatori)."""
     model = Comment
     
     def dispatch(self, request, *args, **kwargs):
@@ -123,7 +117,6 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         return reverse('music:song_detail', kwargs={'pk': self.object.song.pk})
 
 class PlaylistListView(LoginRequiredMixin, ListView):
-    """Vista lista playlist — protetta da login."""
     model = Playlist
     template_name = 'music/playlist_list.html'
 
@@ -137,7 +130,6 @@ class PlaylistListView(LoginRequiredMixin, ListView):
         return context
 
 class PlaylistDetailView(LoginRequiredMixin, DetailView):
-    """Vista dettaglio playlist — mostra le canzoni all'interno."""
     model = Playlist
     template_name = 'music/playlist_detail.html'
 
@@ -150,7 +142,6 @@ class PlaylistDetailView(LoginRequiredMixin, DetailView):
 
 
 class PlaylistCreateView(LoginRequiredMixin, NextUrlMixin, CreateView):
-    """Creazione playlist — per qualsiasi utente autenticato."""
     model = Playlist
     template_name = 'music/playlist_form.html'
     form_class = PlaylistForm
@@ -176,7 +167,6 @@ class PlaylistCreateView(LoginRequiredMixin, NextUrlMixin, CreateView):
 
 
 class PlaylistUpdateView(LoginRequiredMixin, NextUrlMixin, UpdateView):
-    """Modifica di una playlist (es. cambiarne il nome o renderla pubblica/privata)."""
     model = Playlist
     template_name = 'music/playlist_form.html'
     form_class = PlaylistForm
@@ -194,7 +184,6 @@ class PlaylistUpdateView(LoginRequiredMixin, NextUrlMixin, UpdateView):
 
 
 def add_song_to_playlist(request, song_id, playlist_id):
-    """Aggiunge un brano a una playlist specifica, previa verifica della ownership."""
     song = get_object_or_404(Song, id=song_id)
     playlist = get_object_or_404(Playlist, id=playlist_id, owner=request.user)
     
@@ -209,7 +198,6 @@ def add_song_to_playlist(request, song_id, playlist_id):
 
 @login_required
 def remove_song_from_playlist(request, song_id, playlist_id):
-    """Rimuove un brano da una playlist specifica, previa verifica della ownership."""
     song = get_object_or_404(Song, id=song_id)
     playlist = get_object_or_404(Playlist, id=playlist_id, owner=request.user)
     playlist.songs.remove(song)
@@ -217,7 +205,6 @@ def remove_song_from_playlist(request, song_id, playlist_id):
 
 
 class PlaylistDeleteView(LoginRequiredMixin, DeleteView):
-    """Eliminazione playlist — solo per il proprietario."""
     model = Playlist
     template_name = 'music/playlist_confirm_delete.html'
     success_url = reverse_lazy('music:playlist_list')
@@ -229,7 +216,6 @@ class PlaylistDeleteView(LoginRequiredMixin, DeleteView):
 
 @login_required
 def toggle_favorite_playlist(request, pk):
-    """Aggiunge o rimuove una playlist dai preferiti."""
     playlist = get_object_or_404(Playlist, pk=pk)
     if request.user in playlist.followers.all():
         playlist.followers.remove(request.user)
@@ -240,33 +226,28 @@ def toggle_favorite_playlist(request, pk):
 
 
 class GenreListView(LoginRequiredMixin, CuratorRequiredMixin, ListView):
-    """Lista dei generi — solo Curator."""
     model = Genre
     template_name = 'music/genre_list.html'
 
 class GenreCreateView(LoginRequiredMixin, CuratorRequiredMixin, CreateView):
-    """Creazione genere — solo Curator."""
     model = Genre
     template_name = 'music/genre_form.html'
     fields = ['name', 'description']
     success_url = reverse_lazy('music:genre_list')
 
 class GenreUpdateView(LoginRequiredMixin, CuratorRequiredMixin, UpdateView):
-    """Modifica genere — solo Curator."""
     model = Genre
     template_name = 'music/genre_form.html'
     fields = ['name', 'description']
     success_url = reverse_lazy('music:genre_list')
 
 class GenreDeleteView(LoginRequiredMixin, CuratorRequiredMixin, DeleteView):
-    """Eliminazione genere — solo Curator."""
     model = Genre
     template_name = 'music/genre_confirm_delete.html'
     success_url = reverse_lazy('music:genre_list')
 
 @login_required
 def toggle_like_comment(request, pk):
-    """Aggiunge o rimuove un like a un commento."""
     comment = get_object_or_404(Comment, pk=pk)
     if request.user in comment.likes.all():
         comment.likes.remove(request.user)
@@ -276,7 +257,6 @@ def toggle_like_comment(request, pk):
 
 @login_required
 def toggle_like_song(request, pk):
-    """Aggiunge o rimuove una canzone dai preferiti (Liked Songs)."""
     song = get_object_or_404(Song, pk=pk)
     if request.user in song.likes.all():
         song.likes.remove(request.user)

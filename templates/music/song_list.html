@@ -79,10 +79,10 @@
                                 {% if user in song.likes.all %}❤️{% else %}🤍{% endif %}
                             </a>
                             <div class="dropdown d-inline">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-boundary="window">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static">
                                     Add to...
                                 </button>
-                                <ul class="dropdown-menu text-center">
+                                <ul class="dropdown-menu dropdown-menu-end text-center">
                                     {% with av_playlists=user|available_playlists:song %}
                                         {% for pl in av_playlists %}
                                             <li><a class="dropdown-item" href="{% url 'music:add_to_playlist' song.id pl.id %}">{{ pl.name }}</a></li>
