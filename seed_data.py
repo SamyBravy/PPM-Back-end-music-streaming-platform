@@ -10,6 +10,8 @@ django.setup()
 from django.contrib.auth import get_user_model
 from music.models import Genre, Song, Playlist, Comment
 from users.models import FriendRequest
+from mutagen.mp3 import MP3
+from django.conf import settings
 
 User = get_user_model()
 
@@ -107,12 +109,22 @@ def seed():
 
     all_songs = []
     for data in songs_data:
+        duration_delta = timedelta(minutes=data['duration'][0], seconds=data['duration'][1])
+        if data['file']:
+            try:
+                file_path = os.path.join(settings.MEDIA_ROOT, data['file'])
+                if os.path.exists(file_path):
+                    audio = MP3(file_path)
+                    duration_delta = timedelta(seconds=int(audio.info.length))
+            except Exception as e:
+                print(f"Errore lettura durata {data['file']}: {e}")
+
         song, _ = Song.objects.get_or_create(
             title=data['title'], 
             artist=data['artist'], 
             defaults={
                 'genre': genres[data['genre']], 
-                'duration': timedelta(minutes=data['duration'][0], seconds=data['duration'][1]),
+                'duration': duration_delta,
                 'audio_file': data['file'] if data['file'] else ''
             }
         )
