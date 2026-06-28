@@ -1,53 +1,52 @@
-# Backend Project: Music Streaming Service
+# Music Streaming Service
 
-**Student:** Samuele Dell'Erba
-**Project Type:** Full-Stack Web Application
-**Framework Used:** Django 5.x
-**Deployment Link:** [Insert your Render/Railway/PythonAnywhere deployment link here]
+![Backend](https://img.shields.io/badge/Backend-Django_5-092E20?style=flat&logo=django)
+![Frontend](https://img.shields.io/badge/Frontend-Bootstrap_5_|_Vanilla_JS_|_HTMX-563D7C?style=flat&logo=bootstrap)
+![Database](https://img.shields.io/badge/Database-SQLite-003B57?style=flat&logo=sqlite)
+![Architecture](https://img.shields.io/badge/Architecture-MVT-ff69b4?style=flat)
 
----
-
-## Project Description
-
-This project involves the development of a web application for a music streaming service, structured on a **hybrid Monolithic MVT** architecture. The application allows managing a music catalog (genres, songs) and creating personal playlists by users.
-
-The project includes an authentication system, role differentiation (Listener and Curator), and custom forms rendered with Bootstrap 5, fully complying with the assignment requirements.
-
-### Advanced Features Implemented (Beyond basic requirements)
-To make the application more realistic and engaging, the following extra features have been added:
-- **Smart Recommendations:** The homepage suggests new tracks by analyzing the user's favorite "Genre" and "Artist" in real-time (based on "Likes" and songs in their playlists), automatically hiding already known tracks.
-- **Social / Community Features:** Users can send **friend requests** (which can be accepted or rejected), write **comments** and nested replies under tracks, and view other users' public profiles.
-- **Advanced Playlist Management:** Playlists can be set as Private, Public (friends only), or Editorial (Staff). 
-- **Audio File Upload:** It is possible to upload real audio files (`.mp3`, `.wav`, etc.). A dedicated JavaScript script automatically extracts the duration from the file in milliseconds before saving it to the database, preventing manual input errors.
-- **Dynamic Interface and Dark Mode:** The design uses a custom "Neo-Brutalism" aesthetic, featuring a persistent **Dark/Light mode** system saved in the browser's LocalStorage.
+**Student:** Samuele Dell'Erba  
+**Chosen Project Type:** Full-Stack Web Application - Music Streaming Service  
+**Framework Used:** Django 5.x (with Bootstrap 5 & Vanilla JS)  
+**Deployment Link:** [INSERT DEPLOYMENT LINK HERE]  
 
 ---
 
-## Features by Role
+## 📖 Short Description
 
-The system uses a custom user model (`CustomUser`) with predefined roles that regulate access and content management.
+This project is a complete, dynamic **Music Streaming Service** built on a Monolithic MVT architecture. It features a custom "Neo-Brutalism" aesthetic (complete with a persistent Dark/Light mode), a fully functional music catalog, and deep social interaction features. The application goes beyond basic CRUD operations by integrating real audio file handling with automated JS-based duration extraction, nested community comment threads, and a smart recommendation engine for users.
 
-### Role: **Listener** (Standard User)
-- Free navigation and browsing of the song catalog and musical genres.
-- Creation and viewing of personal playlists.
-- Access and navigation to routes protected by `LoginRequiredMixin`.
+## ✨ Implemented Features (By User Role)
 
-### Role: **Curator** (Staff Member)
-- All the features of the Listener.
-- Insertion, modification, and deletion (CRUD) of music tracks from the catalog (via protected Class-Based Views on the frontend).
-- Management of musical genres directly from the frontend.
-- Destructive or write operations are protected on the backend by the `PermissionRequiredMixin` and `UserPassesTestMixin`.
+The platform uses a custom user model with an icon-based avatar system and strict role-based access control.
 
-### Role: **Moderator** (Staff Member)
-- All the features of the Listener.
-- Full control over platform comments (ability to delete any comment made by any user to maintain community guidelines).
-- Destructive operations are protected on the backend by specific dispatch checks in the Views.
+### Guest (Unauthenticated User)
+- **Authentication:** Secure Login and Logout functionalities handled natively by Django.
+- **Registration:** New users can register an account directly from the browser.
+
+### Listener (Standard User)
+- **Audio Playback & Catalog:** Browse the music catalog, filter by Genre, Search by Name/Artist, and filter specifically for tracks that have real audio files (`Has Audio` filter). Thanks to HTMX, audio playback persists seamlessly across page navigations (SPA feel).
+- **Playlists:** Create and manage personal playlists. Set visibility to Private or Public (friends only). Follow and save other users' public playlists (or Editorial playlists) to your own library.
+- **User Profiles:** View and edit your personal profile (change your emoji avatar and personal informations). Visit other users' public profiles to see their role, recent comments, and public playlists (filtered by friendship status).
+- **Social & Community:** Send, accept, or reject friend requests. Add "Likes" to songs. Participate in nested comment threads (with likes on comments).
+- **Smart Recommendations:** The homepage dynamically analyzes the user's liked songs and playlists to calculate their favorite Genre and Artist in real-time, proposing new tracks while hiding those they already know.
+
+### Curator (Staff Member)
+- **Catalog Management:** Full CRUD access to the Song Catalog and Genres directly from the frontend interface.
+- **Smart Audio Upload:** Upload real `.mp3` files. A custom JavaScript script intercepts the file, reads its metadata, and automatically extracts the exact duration in milliseconds, preventing manual input tampering.
+- **Editorial Playlists:** Can create special "Editorial" playlists (e.g., Top 10 Global) to highlight specific tracks for all users.
+
+### Moderator
+- **Community Guidelines:** Control over the platform's social aspect. Can view and delete any comment from any user across the platform to combat spam or inappropriate behavior.
+
+### Administrator (Superuser)
+- **System Control:** Full access to the protected Django Administration panel to manage the database natively.
 
 ---
 
-## Installation and Startup Instructions (Local Development)
+## 🛠️ Local Installation Instructions
 
-Requirements: Python 3.10+
+**Requirements:** Python 3.10+
 
 1. **Clone the Repository**
    ```bash
@@ -55,7 +54,7 @@ Requirements: Python 3.10+
    cd <project-folder>
    ```
 
-2. **Create and activate the Virtual Environment**
+2. **Create and Activate the Virtual Environment**
    - On Windows:
      ```bash
      python -m venv .venv
@@ -81,63 +80,75 @@ Requirements: Python 3.10+
    ```bash
    python manage.py runserver
    ```
-   The application will be accessible at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+   The application will be accessible at `http://127.0.0.1:8000`.
 
-> **Note:** The `db.sqlite3` file should already be included and populated. However, if you need to recreate the database from scratch, you can run `python seed_data.py` to automatically regenerate all users, songs, playlists, and test data.
+> **Note on Database (`db.sqlite3`):** The repository includes a pre-populated `db.sqlite3` file containing demo data (users, real songs, playlists). If you ever need to recreate the database from scratch with perfect test data, run `python seed_data.py` after migrating.
 
 ---
 
-## Pre-Populated Demo Accounts
+## 🔐 Pre-Populated Demo Accounts
 
-The distributed SQLite database is already pre-populated with songs, genres, and test user accounts:
+The `db.sqlite3` database includes the following accounts ready for testing:
 
-| Username | Password | Role Equivalent | Notes |
+| Username | Password | Role | Notes |
 |---|---|---|---|
-| `admin_demo` | `admin12345` | Administrator (Superuser) | Full access and admin panel access. |
-| `curator_demo` | `curator12345` | Manager (Staff) | Advanced role. Permissions to add/edit/delete songs and genres. |
-| `moderator_demo`| `moderator12345`| Moderator | Focuses on community moderation. Can delete any comment. |
-| `listener_demo`| `listener12345`| User (Standard) | Standard read-only user (catalog) and write access to their own playlists. |
-| `alice` / `bob` | `password123` | User (Standard) | Extra test accounts to try out friend requests and comment interactions. |
+| `admin_demo` | `admin12345` | Administrator | Has `is_superuser=True`. Full admin panel access. |
+| `curator_demo` | `curator12345` | Curator | Can add/edit/delete songs and upload audio files. |
+| `moderator_demo`| `moderator12345`| Moderator | Can delete any comment on the platform. |
+| `listener_demo`| `listener12345`| Listener | Standard user for browsing and playlists. |
+| `alice` / `bob` / `charlie` / `dave` / `eve` / `frank` | `password123` | Listener | Secondary accounts used to demonstrate friend requests and community interactions. |
+| `sara_curates` / `mike_curates` | `password123` | Curator | Additional staff accounts for catalog management. |
+| `john_mod` / `lisa_mod` | `password123` | Moderator | Additional staff accounts for community moderation. |
+| `spambot` | `password123` | Listener | A dummy account used to test moderation (has posted a spam link). |
 
 ---
 
-## Testing Scenario (Browser-based Workflow)
+## 🧪 Testing Scenario (Browser-based Workflow)
 
-As required by the specifications for Full-Stack projects, here is a short scenario to test the functioning of roles and permissions directly from the browser:
+To quickly test the main workflows, roles, and permissions of the project, follow this short scenario:
 
-1. **Listener Permissions Test (Access Denied)**
-   - Go to the site address and click on **Login**.
-   - Log in with the `listener_demo` account (password: `listener12345`).
-   - Go to the **Music Catalog** page. You will notice that the "Add Song", "Edit", or "Delete" buttons are **not** present.
-   - (Optional) Try to force access to the track creation URL: add `/add/` to the catalog URL (e.g. `/music/songs/add/`). You will receive a 403 error (Access Denied) because you are a Listener and not a Curator.
-   
-2. **Curator Features Test (Creation and Management)**
-   - **Logout** and log in again as `curator_demo` (password: `curator12345`).
-   - Go to the **Music Catalog**. You will now see the green **"+ Add Song"** and **"Manage Genres"** buttons.
-   - Click on **+ Add Song**.
-   - Fill out the form: enter a title, an artist, and select a genre. Upload an audio file (the *Duration* field will auto-fill and lock to prevent tampering).
-   - Click **Add**. You will be redirected to the catalog and see a green success message. Your new song is now in the catalog.
-   
-3. **Moderator Workflow (Community Management):**
-   - **Logout** and log in as `moderator_demo` (password: `moderator12345`).
-   - Navigate to any song in the **Music Catalog**.
-   - **Verify:** You can see the red "Delete" button on *all* user comments, allowing you to moderate the community.
-   - Log out.
+### 1. The "Ultimate Hub" Test (Playback, Social & Moderation)
+- Go to the application and **Login** as `moderator_demo` (password: `moderator12345`).
+- Navigate to the **Music Catalog**. Test the **"Has Audio"** checkbox filter and hit Search.
+- Open the song **"Bohemian Rhapsody"** (which acts as the perfect demo hub).
+- **Verify:**
+  1. Click the play button on the audio player to hear the real `.mp3` file.
+  2. Scroll down to see a complex, nested comment thread featuring interactions between Listeners, Curators, and the Admin.
+  3. Notice a comment left by `spambot` containing a scam link. Since you are logged in as a Moderator, you will see a red **Delete** button next to it. Click it to enforce community guidelines!
 
-4. **Admin Workflow (System Management):**
-   - Log in as `admin_demo` (password: `admin12345`).
-   - **Verify:** You can see the red "⚙️ Control Panel" button in the navigation bar.
-   - Click it to access the Django backend administration panel.
-   
-5. **Social and Playlist Test (User Interaction)**
-   - Log back in as `listener_demo` (password: `listener12345`).
-   - From the Home or Catalog, click on the heart (🤍) next to a song to add it to your favorites (it will turn into ❤️).
-   - Expand the "Add to..." dropdown menu and create a new playlist called "My Hits".
-   - Go back to the **Home**: you will notice that the recommendation system ("Recommended for you") has analyzed your Likes and Playlists, proposing similar tracks while automatically discarding the ones you already know!
+### 2. Curator Permissions Test (Catalog Management)
+- **Login** as `curator_demo` (password: `curator12345`).
+- Go to the **Music Catalog**. You will now see the green **"+ Add Song"** button.
+- Click it, fill in a Title, Artist, and select a Genre. **Upload an audio file**; you will see the *Duration* field magically auto-fill thanks to the JS script.
+- Click **Save**.
+- **Verify (Access Denied):** Logout, log in as `listener_demo`, and try to manually visit the URL `/music/songs/add/`. You will get a **403 Forbidden** error because Listeners cannot perform CRUD operations on the catalog.
+
+### 3. Smart Recommendation Test
+- While logged in as `listener_demo`, go to the catalog and click the **Heart (🤍)** on a few Rock songs.
+- Go to the **Playlists** tab and create a new playlist.
+- Return to the **Home** page.
+- **Verify:** The "Recommended for you" section will analyze your recent likes and playlists in real-time, suggesting new Rock tracks while automatically hiding the ones you already liked!
+
+### 4. Playlist Privacy & Social Connections Test
+- **Login** as `alice` (password: `password123`).
+- Go to the **Playlists** section. You will see Alice has a private playlist called "Guilty Pleasures".
+- Go to the **Social / Friends** page. Accept the pending friend requests from Dave and Eve.
+- **Verify Privacy:** Logout and log in as `dave` (password: `password123`). Go to Alice's profile (by clicking her name on a comment or through the Social tab). You will see her public playlist ("Alice's Favorites"), but her "Guilty Pleasures" playlist remains completely hidden!
+
+### 5. UI/UX and Theme Persistence Test
+- Regardless of whether you are logged in or not, click the **Theme Toggle** (moon/sun icon) in the navigation bar to switch between the Neo-Brutalism Light Mode and Dark Mode.
+- **Verify:** Refresh the page or close and reopen the browser tab. The application remembers your choice via `LocalStorage`, maintaining the high-contrast aesthetic seamlessly.
+
+### 6. Admin Database Access Test
+- **Login** as `admin_demo` (password: `admin12345`).
+- Click the **⚙️ Control Panel** button in the navigation bar.
+- **Verify:** You are granted access to the native Django administration interface where you can bypass frontend logic and manually inspect users, comments, and relationships.
 
 ---
 
-## Deployment Link
+## 🤖 Main Use of AI
 
-The application is regularly deployed and reachable online at the following address:
-**[INSERT DEPLOYMENT LINK HERE (e.g. Render, Heroku)]**
+During the development of this project, AI assistants were mainly utilized for:
+- **README.md:** Assisting in structuring and formatting this documentation for clarity and professional presentation.
+- **Data Seeding (`seed_data.py`):** Helping to generate realistic mock data (users, songs, playlists, comments) and creating the script to populate the database for demonstration purposes.
+- **General Light Refactoring:** Providing suggestions for code cleanup, organizing logic, and improving overall code structure.

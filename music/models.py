@@ -5,6 +5,7 @@ from django.core.validators import FileExtensionValidator
 
 
 class Genre(models.Model):
+    """Model representing a musical genre."""
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
 
@@ -13,6 +14,7 @@ class Genre(models.Model):
 
 
 class Song(models.Model):
+    """Model representing a musical track in the catalog."""
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
     genre = models.ForeignKey(
@@ -41,6 +43,7 @@ class Song(models.Model):
 
 
 class Comment(models.Model):
+    """Model to handle user comments (with nested replies support) under songs."""
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
@@ -56,6 +59,7 @@ class Comment(models.Model):
 
 
 class Playlist(models.Model):
+    """Model representing a playlist (public, private, or editorial) created by a user."""
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

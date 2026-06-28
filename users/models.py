@@ -4,6 +4,11 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
+    """
+    Custom user model extending Django's AbstractUser.
+    Implements a role system (Listener, Curator, Moderator), 
+    friend management, and custom profile icons.
+    """
     ROLE_CHOICES = (
         ('listener', 'Listener'),
         ('curator', 'Curator'),
@@ -37,7 +42,7 @@ class CustomUser(AbstractUser):
 
 
 class FriendRequest(models.Model):
-    """Modello per gestire le richieste di amicizia tra utenti."""
+    """Model to handle friend requests between users."""
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_requests')
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_requests')
     is_accepted = models.BooleanField(default=False)
