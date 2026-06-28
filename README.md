@@ -112,7 +112,7 @@ To quickly test the main workflows, roles, and permissions of the project, follo
 - Navigate to the **Music Catalog**. Test the **"Has Audio"** checkbox filter and hit Search.
 - Open the song **"Bohemian Rhapsody"**.
 - Click the play button on the audio player to hear the real `.mp3` file.
-- Scroll down to see a complex, nested comment thread featuring interactions between Listeners, Curators, and the Admin.
+- Scroll down to see a nested comment thread featuring interactions between Listeners, Curators, and the Admin.
 - Notice a comment left by `spambot` containing a scam link. Since you are logged in as a Moderator, you will see a red **Delete** button next to it. Click it to remove the comment.
 - Reply to bob's comment and like alice's comment.
 - Go to a different page and notice the song continuing to play.
@@ -129,17 +129,17 @@ To quickly test the main workflows, roles, and permissions of the project, follo
 - Go to **Playlists** and notice the Editorial playlist with your new song in the **Famous Playlists** section, add it to your favorited playlists and see if it's in the **"My Favorites"** section.
 
 ### 3. Smart Recommendation Test
-- **Login** as `eve` (password: `password123`), go to the **Music Catalog** and click the **Heart (🤍)** on a few Rock songs.
+- **Login** as `charlie` (password: `password123`), go to the **Music Catalog** and click the **Heart (🤍)** on a few Hip Hop songs (you can filter by genre).
 - Go to the **Playlists** tab and see the songs you liked in the "Liked Songs" section.
 - Return to the **Home** page.
-- **Verify:** The "Recommended for you" section will analyze your recent likes and playlists in real-time, suggesting new Rock tracks while automatically hiding the ones you already liked.
+- **Verify:** The "Recommended for you" section will analyze your recent likes and playlists in real-time, suggesting new Hip Hop tracks (or Michael Jackson's sogns if the tracks you liked are by Michael Jackson) while automatically hiding the ones you already liked.
 
-### 4. Playlist Privacy & Social Connections Test
+### 4. Playlist Privacy & Social Test
 - **Login** as `alice` (password: `password123`).
 - Go to the **Playlists** section. You will see Alice has a private playlist called "Guilty Pleasures".
 - Go to the **Social / Friends** page. Accept the pending friend requests from Dave and Eve.
-- **Verify Privacy:** Logout and log in as `dave` (password: `password123`). Go to Alice's **Profile** (by clicking her name on a comment or through the **Social** tab). You will see her public playlist ("Alice's Favorites"), but her "Guilty Pleasures" playlist remains completely hidden. Also notice her comments on **Recent Activity**.
-- **Follow a Playlist:** Click the **Star Icon** on Alice's public playlist. Now go to the **Playlists** page. You will see "Alice's Favorites" under **"My Followed Playlists"**.
+- **Verify Privacy:** Logout and log in as `dave` (password: `password123`). Go to Alice's **Profile** (by clicking her name on a comment or through the friends list on your **profile page**). You will see her public playlist ("Alice's Favorites"), but her "Guilty Pleasures" playlist remains completely hidden. Also notice her comments on **Recent Activity**.
+- **Follow a Playlist:** Click the **Star Icon** on Alice's public playlist. Now go to the **Playlists** page. You will see "Alice's Favorites" under **"My Favorites"**.
 - Click on your name in the top bar to go to your **Profile**. Edit your bio and icon, and save changes.
 
 ### 5. UI/UX and Theme Persistence Test

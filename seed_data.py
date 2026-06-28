@@ -105,6 +105,11 @@ def seed():
         {"title": "Thriller", "artist": "Michael Jackson", "genre": "Pop", "duration": (5, 57), "file": "songs/no_copyright (9).mp3"},
         {"title": "Blue in Green", "artist": "Miles Davis", "genre": "Jazz", "duration": (5, 37), "file": None},
         {"title": "Juicy", "artist": "The Notorious B.I.G.", "genre": "Hip Hop", "duration": (5, 2), "file": None},
+        {"title": "Starboy", "artist": "The Weeknd", "genre": "Pop", "duration": (3, 50), "file": None},
+        {"title": "Invincible", "artist": "Michael Jackson", "genre": "Hip Hop", "duration": (3, 39), "file": None},
+        {"title": "Get Lucky", "artist": "Daft Punk", "genre": "Electronic", "duration": (6, 9), "file": None},
+        {"title": "Smooth Criminal", "artist": "Michael Jackson", "genre": "Hip Hop", "duration": (4, 17), "file": None},
+        {"title": "Dangerous", "artist": "Michael Jackson", "genre": "Hip Hop", "duration": (4, 50), "file": None},
     ]
 
     all_songs = []
