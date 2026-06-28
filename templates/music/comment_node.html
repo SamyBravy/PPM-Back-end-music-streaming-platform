@@ -40,7 +40,6 @@
         {% endif %}
     </div>
     
-    <!-- Form Risposta -->
     {% if user.is_authenticated %}
     <div class="collapse mt-2" id="replyForm{{ comment.id }}">
         <form method="post" action="{% url 'music:song_detail' song.pk %}" class="d-flex gap-2">
@@ -52,7 +51,6 @@
     </div>
     {% endif %}
     
-    <!-- Risposte Ricorsive -->
     {% if comment.replies.all %}
         <div class="ms-3 ps-3 border-start border-2 border-secondary" style="margin-top: 0.5rem;">
             {% for child_comment in comment.replies.all %}

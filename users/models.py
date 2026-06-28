@@ -4,12 +4,6 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    """
-    Modello utente personalizzato.
-    Estende AbstractUser per consentire future estensioni
-    (es. avatar, bio, ruolo listener/curator).
-    Il ruolo Curator è gestito anche tramite il campo is_staff ereditato da AbstractUser.
-    """
     ROLE_CHOICES = (
         ('listener', 'Listener'),
         ('curator', 'Curator'),

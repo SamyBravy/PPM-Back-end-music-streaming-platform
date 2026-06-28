@@ -185,7 +185,6 @@ class PlaylistUpdateView(LoginRequiredMixin, NextUrlMixin, UpdateView):
     def get_queryset(self):
         if self.request.user.role == 'curator' or self.request.user.is_superuser:
             return Playlist.objects.filter(Q(owner=self.request.user) | Q(is_editorial=True))
-        # L'utente normale può modificare solo le SUE playlist
         return Playlist.objects.filter(owner=self.request.user)
 
 

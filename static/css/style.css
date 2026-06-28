@@ -175,7 +175,6 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-/* Neo-Brutalism Classes */
 .neo-card {
   background: #ffffff !important;
   border: var(--neo-border) !important;
@@ -193,7 +192,6 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 10;
 }
 
-/* Typography Enhancements */
 a {
   color: var(--accent-primary);
   transition: color 0.2s ease;
@@ -203,30 +201,8 @@ a:hover {
   color: var(--accent-tertiary);
 }
 
-/* Button overrides to match theme colors */
-.btn-primary {
-  background-color: var(--accent-primary) !important;
-  border-color: var(--accent-primary) !important;
-  color: #fff !important;
-}
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-  background-color: #c46b53 !important;
-  border-color: #c46b53 !important;
-  color: #fff !important;
-}
 
-.btn-outline-primary {
-  color: var(--accent-primary) !important;
-  border-color: var(--accent-primary) !important;
-}
-.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active,
-.btn-outline-primary.dropdown-toggle.show {
-  background-color: var(--accent-primary) !important;
-  border-color: var(--accent-primary) !important;
-  color: #fff !important;
-}
 
-/* Remove default blue focus ring globally and use theme color */
 .btn:focus, .btn:active, .navbar-toggler:focus,
 .form-control:focus, .form-select:focus {
   box-shadow: 0 0 0 0.2rem rgba(224, 122, 95, 0.25) !important;
@@ -241,7 +217,6 @@ a:hover {
   color: var(--text-secondary) !important;
 }
 
-/* Bootstrap Overrides for Soft Lo-Fi Mode */
 .card {
   background-color: #ffffff;
   border: var(--neo-border);
@@ -267,7 +242,6 @@ a:hover {
   background-color: rgba(61, 64, 91, 0.05);
 }
 
-/* Input Fields */
 .form-control, .form-select {
   background-color: #ffffff;
   border: 2px solid var(--text-primary);
@@ -374,11 +348,6 @@ a:hover {
   border-color: var(--text-secondary);
 }
 
-/* Animations & Interactions */
-.hover-scale {
-  /* Removed for this aesthetic */
-}
-
 .btn {
   border-radius: 6px;
   font-weight: 600;
@@ -402,9 +371,10 @@ a:hover {
   color: #fff;
   border-color: var(--text-primary);
 }
-.btn-primary:hover {
-  background-color: #c7654a;
-  color: #fff;
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .show>.btn-primary.dropdown-toggle {
+  background-color: #c7654a !important;
+  border-color: var(--text-primary) !important;
+  color: #fff !important;
 }
 
 .btn-success {
@@ -412,40 +382,43 @@ a:hover {
   color: #fff;
   border-color: var(--text-primary);
 }
-.btn-success:hover {
-  background-color: #6ea089;
-  color: #fff;
+.btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .show>.btn-success.dropdown-toggle {
+  background-color: #6ea089 !important;
+  border-color: var(--text-primary) !important;
+  color: #fff !important;
 }
 
 .btn-outline-primary {
-  color: var(--accent-tertiary);
+  color: var(--accent-primary);
   border-color: var(--text-primary);
   background-color: transparent;
 }
-.btn-outline-primary:hover {
-  background-color: var(--accent-tertiary);
-  color: #fff;
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .show>.btn-outline-primary.dropdown-toggle {
+  background-color: var(--accent-primary) !important;
+  border-color: var(--text-primary) !important;
+  color: #fff !important;
 }
 .btn-outline-danger {
   border: 2px solid var(--text-primary);
   color: #d9534f;
   font-weight: 600;
 }
-.btn-outline-danger:hover {
-  background-color: #d9534f;
-  color: #fff;
+.btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger:active, .btn-outline-danger.active, .show>.btn-outline-danger.dropdown-toggle {
+  background-color: #d9534f !important;
+  border-color: var(--text-primary) !important;
+  color: #fff !important;
 }
 .btn-outline-secondary {
   border: 2px solid var(--text-primary);
   color: var(--text-primary);
   background-color: #f0f0f0;
 }
-.btn-outline-secondary:hover {
-  background-color: var(--text-primary);
-  color: #fff;
+.btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary:active, .btn-outline-secondary.active, .show>.btn-outline-secondary.dropdown-toggle {
+  background-color: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
+  color: #fff !important;
 }
 
-/* Minimal Text Buttons (For Comments) */
 .btn-text {
   border: none !important;
   box-shadow: none !important;
@@ -462,12 +435,6 @@ a:hover {
   opacity: 0.7;
 }
 
-/* Entrance Animations */
-.fade-in-up {
-  /* Removed heavy animations, just display normally */
-}
-
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
 }
@@ -483,11 +450,10 @@ a:hover {
   background: #c7654a;
 }
 
-/* Navbar Link Hover Effect */
 .navbar-nav .nav-link {
   position: relative;
   display: inline-block;
-  padding-bottom: 2px; /* slight padding for the line */
+  padding-bottom: 2px;
 }
 
 .navbar-nav .nav-link::after {

@@ -12,7 +12,7 @@
 		<div class="card neo-card">
 			<div class="card-body p-4">
 				<h2 class="card-title mb-4" style="color: var(--accent-tertiary);">
-					{% if object %}Edit Song{% else %}+ Add Song{% endif %}
+					{% if object %}Edit Song{% else %}Add Song{% endif %}
 				</h2>
 				<form method="post" enctype="multipart/form-data">
 					{% csrf_token %}

@@ -1,4 +1,3 @@
-// Use a flag to avoid adding multiple event listeners when HTMX re-evaluates scripts
 if (!window.themeToggleInitialized) {
     window.themeToggleInitialized = true;
 
@@ -34,10 +33,8 @@ if (!window.themeToggleInitialized) {
     });
 }
 
-// Execute on every load
 if (window.updateIcon) window.updateIcon();
 
-// Global Player Logic
 function playGlobalSong(url, title, artist, detailUrl) {
     const container = document.getElementById('global-player-container');
     const audio = document.getElementById('global-audio');

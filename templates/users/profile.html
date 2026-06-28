@@ -98,7 +98,6 @@
                 <h5 class="mb-0" style="color: var(--accent-tertiary);">Your Friends ({{ friends_list.count }})</h5>
             </div>
             <div class="card-body">
-                <!-- Form Aggiungi Amico -->
                 <form action="{% url 'users:send_request_by_username' %}" method="post" class="mb-4">
                     {% csrf_token %}
                     <div class="input-group">

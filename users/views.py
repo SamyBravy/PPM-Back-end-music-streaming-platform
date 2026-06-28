@@ -11,7 +11,6 @@ from .forms import CustomUserCreationForm, UserProfileUpdateForm
 
 
 class SignUpView(CreateView):
-    """Vista di registrazione — usa il form personalizzato con campo role."""
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('users:login')
     template_name = 'users/signup.html'
@@ -20,7 +19,6 @@ class SignUpView(CreateView):
 
 
 class UserProfileView(LoginRequiredMixin, TemplateView):
-    """Pagina del profilo utente privato (personale)."""
     template_name = 'users/profile.html'
 
     def get_context_data(self, **kwargs):
@@ -31,7 +29,6 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
         return context
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    """Vista per modificare il proprio profilo."""
     model = CustomUser
     form_class = UserProfileUpdateForm
     template_name = 'users/profile_edit.html'
@@ -42,7 +39,6 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class PublicProfileView(LoginRequiredMixin, DetailView):
-    """Profilo pubblico di un altro utente."""
     model = CustomUser
     template_name = 'users/public_profile.html'
     slug_field = 'username'
@@ -56,7 +52,6 @@ class PublicProfileView(LoginRequiredMixin, DetailView):
         
         context['user_comments'] = target_user.comments.all()
         
-        # Gestione stato amicizia
         is_friend = current_user.friends.filter(pk=target_user.pk).exists()
         is_self = current_user == target_user
         
@@ -70,7 +65,6 @@ class PublicProfileView(LoginRequiredMixin, DetailView):
             context['public_playlists'] = target_user.playlists.filter(is_editorial=True)
             
         if not is_friend and not is_self:
-            # Check if a friend request is pending
             req_sent = FriendRequest.objects.filter(sender=current_user, receiver=target_user, is_accepted=False).exists()
             req_received = FriendRequest.objects.filter(sender=target_user, receiver=current_user, is_accepted=False).exists()
             context['request_sent'] = req_sent
@@ -133,7 +127,6 @@ def remove_friend(request, username):
     if request.method == 'POST':
         if request.user.friends.filter(pk=target_user.pk).exists():
             request.user.friends.remove(target_user)
-            # Remove previous requests in both directions
             FriendRequest.objects.filter(sender=request.user, receiver=target_user).delete()
             FriendRequest.objects.filter(sender=target_user, receiver=request.user).delete()
             messages.success(request, f"You have removed {username} from your friends.")

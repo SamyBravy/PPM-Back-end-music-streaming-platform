@@ -43,7 +43,6 @@ urlpatterns = [
     path('playlists/<int:pk>/delete/', PlaylistDeleteView.as_view(), name='playlist_delete'),
     path('playlists/<int:pk>/favorite/', toggle_favorite_playlist, name='toggle_favorite_playlist'),
     
-    # Genre Management (Curator only)
     path('genres/', GenreListView.as_view(), name='genre_list'),
     path('genres/add/', GenreCreateView.as_view(), name='genre_create'),
     path('genres/<int:pk>/edit/', GenreUpdateView.as_view(), name='genre_update'),

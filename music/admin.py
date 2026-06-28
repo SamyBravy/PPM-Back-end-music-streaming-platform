@@ -21,4 +21,4 @@ class PlaylistAdmin(admin.ModelAdmin):
     list_display = ['name', 'owner']
     list_filter = ['owner']
     search_fields = ['name']
-    filter_horizontal = ['songs']  # Widget comodo per la relazione M2M
+    filter_horizontal = ['songs']

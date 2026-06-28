@@ -15,7 +15,6 @@ class SongForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        # Check if the user checked the clear checkbox in the bound data
         is_cleared = self.is_bound and self.data.get(self.add_prefix('audio_file') + '-clear')
         
         if self.instance and self.instance.pk and self.instance.audio_file and not is_cleared:

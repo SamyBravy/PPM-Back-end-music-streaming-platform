@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.core.validators import FileExtensionValidator
 
 
 class Genre(models.Model):
-    """Genere musicale (es. Rock, Jazz, Pop)."""
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
 
@@ -13,7 +13,6 @@ class Genre(models.Model):
 
 
 class Song(models.Model):
-    """Singolo brano musicale, associato a un genere (One-to-Many)."""
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=200)
     genre = models.ForeignKey(
@@ -22,7 +21,6 @@ class Song(models.Model):
         related_name='songs',
     )
     duration = models.DurationField()
-    from django.core.validators import FileExtensionValidator
     audio_file = models.FileField(
         upload_to='songs/', 
         blank=True, 
@@ -43,7 +41,6 @@ class Song(models.Model):
 
 
 class Comment(models.Model):
-    """Commento inserito da un utente sotto un brano specifico."""
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
@@ -59,7 +56,6 @@ class Comment(models.Model):
 
 
 class Playlist(models.Model):
-    """Playlist creata da un utente, contiene brani (Many-to-Many)."""
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
