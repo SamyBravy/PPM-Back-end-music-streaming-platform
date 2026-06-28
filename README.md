@@ -83,7 +83,7 @@ Requirements: Python 3.10+
    ```
    The application will be accessible at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-> **Note:** The `db.sqlite3` file is already included and populated, you can log in with the demo accounts below without running any additional commands.
+> **Note:** The `db.sqlite3` file should already be included and populated. However, if you need to recreate the database from scratch, you can run `python seed_data.py` to automatically regenerate all users, songs, playlists, and test data.
 
 ---
 
@@ -97,6 +97,7 @@ The distributed SQLite database is already pre-populated with songs, genres, and
 | `curator_demo` | `curator12345` | Manager (Staff) | Advanced role. Permissions to add/edit/delete songs and genres. |
 | `moderator_demo`| `moderator12345`| Moderator | Focuses on community moderation. Can delete any comment. |
 | `listener_demo`| `listener12345`| User (Standard) | Standard read-only user (catalog) and write access to their own playlists. |
+| `alice` / `bob` | `password123` | User (Standard) | Extra test accounts to try out friend requests and comment interactions. |
 
 ---
 

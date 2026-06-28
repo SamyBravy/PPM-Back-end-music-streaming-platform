@@ -16,11 +16,11 @@
 <hr>
 
 <div class="neo-card p-3 mb-4">
-    <form method="get" class="row g-2">
-        <div class="col-md-5">
+    <form method="get" action="{% url 'music:song_list' %}" class="row g-2 align-items-center">
+        <div class="col-md-4">
             <input type="text" name="q" class="form-control" placeholder="Search by title or artist..." value="{{ current_q }}">
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <select name="genre" class="form-select">
                 <option value="">All genres</option>
                 {% for genre in genres %}
@@ -29,6 +29,12 @@
                     </option>
                 {% endfor %}
             </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-center justify-content-center">
+            <div class="form-check mb-0">
+                <input class="form-check-input border-dark" type="checkbox" id="hasAudioCheck" name="has_audio" {% if current_has_audio %}checked{% endif %}>
+                <label class="form-check-label fw-bold" for="hasAudioCheck">Has Audio</label>
+            </div>
         </div>
         <div class="col-md-3 d-flex">
             <button type="submit" class="btn btn-primary w-100 me-2">Search</button>

@@ -26,6 +26,7 @@ class SongListView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         q = self.request.GET.get('q', '')
         genre_id = self.request.GET.get('genre', '')
+        has_audio = self.request.GET.get('has_audio') == 'on'
 
         if q:
             queryset = queryset.filter(
@@ -33,6 +34,8 @@ class SongListView(LoginRequiredMixin, ListView):
             )
         if genre_id:
             queryset = queryset.filter(genre_id=genre_id)
+        if has_audio:
+            queryset = queryset.exclude(Q(audio_file='') | Q(audio_file__isnull=True))
             
         return queryset
 
@@ -43,6 +46,7 @@ class SongListView(LoginRequiredMixin, ListView):
         current_genre_id = self.request.GET.get('genre', '')
         context['current_q'] = self.request.GET.get('q', '')
         context['current_genre'] = current_genre_id
+        context['current_has_audio'] = self.request.GET.get('has_audio') == 'on'
         
         if current_genre_id:
             try:
