@@ -160,7 +160,7 @@ def seed():
     
     # Playlist Followers
     pl1.followers.add(users['alice'], users['bob'], users['charlie'])
-    pl3.followers.add(users['bob'], users['eve'])
+    pl3.followers.add(users['bob'], users['charlie'])
 
     # 7. Commenti (Thread di discussione profondi e Like sui commenti)
     print("-> Creazione della canzone 'Perfetta' per la Demo...")
