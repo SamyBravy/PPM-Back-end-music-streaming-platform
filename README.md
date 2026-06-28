@@ -50,8 +50,8 @@ The platform uses a custom user model with an icon-based avatar system and stric
 
 1. **Clone the Repository**
    ```bash
-   git clone <repository-url>
-   cd <project-folder>
+   git clone https://github.com/SamyBravy/PPM-Back-end-music-streaming-platform.git
+   cd PPM-Back-end-music-streaming-platform
    ```
 
 2. **Create and Activate the Virtual Environment**
@@ -71,7 +71,7 @@ The platform uses a custom user model with an icon-based avatar system and stric
    pip install -r requirements.txt
    ```
 
-4. **Apply Migrations**
+4. **Apply Migrations** (not strictly necessary, as db.sqlite3 is already populated)
    ```bash
    python manage.py migrate
    ```
