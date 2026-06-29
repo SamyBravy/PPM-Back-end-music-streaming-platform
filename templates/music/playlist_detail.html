@@ -4,67 +4,70 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center">
-    <h2>
-        Playlist: {{ playlist.name }}
-        {% if playlist.is_editorial %}
-            <span class="badge bg-warning text-dark fs-6 align-middle">Editorial</span>
-        {% elif playlist.is_public %}
-            <span class="badge bg-success fs-6 align-middle">Public</span>
-        {% else %}
-            <span class="badge bg-secondary fs-6 align-middle">Private</span>
-        {% endif %}
-    </h2>
-    <div class="d-flex gap-2">
-        {% if playlist.owner != request.user %}
-            <a href="{% url 'music:toggle_favorite_playlist' playlist.pk %}" class="btn {% if request.user in playlist.followers.all %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                {% if request.user in playlist.followers.all %}⭐ Favorited{% else %}☆ Add to Favorites{% endif %}
-            </a>
-        {% endif %}
-        {% if playlist.owner == request.user or request.user.role == 'curator' or request.user.is_superuser %}
-            <a href="{% url 'music:playlist_update' playlist.pk %}?next={{ request.path }}" class="btn btn-outline-secondary">✏️ Edit</a>
-        {% endif %}
-        {% if playlist.owner == request.user %}
-            <a href="{% url 'music:playlist_delete' playlist.pk %}" class="btn btn-outline-danger">Delete Playlist</a>
-        {% endif %}
-    </div>
+	<h2>
+		Playlist: {{ playlist.name }}
+		{% if playlist.is_editorial %}
+		<span class="badge bg-warning text-dark fs-6 align-middle">Editorial</span>
+		{% elif playlist.is_public %}
+		<span class="badge bg-success fs-6 align-middle">Public</span>
+		{% else %}
+		<span class="badge bg-secondary fs-6 align-middle">Private</span>
+		{% endif %}
+	</h2>
+	<div class="d-flex gap-2">
+		{% if playlist.owner != request.user %}
+		<a href="{% url 'music:toggle_favorite_playlist' playlist.pk %}"
+			class="btn {% if request.user in playlist.followers.all %}btn-warning{% else %}btn-outline-warning{% endif %}">
+			{% if request.user in playlist.followers.all %}⭐ Favorited{% else %}☆ Add to Favorites{% endif %}
+		</a>
+		{% endif %}
+		{% if playlist.owner == request.user or request.user.role == 'curator' or request.user.is_superuser %}
+		<a href="{% url 'music:playlist_update' playlist.pk %}?next={{ request.path }}"
+			class="btn btn-outline-secondary">Edit</a>
+		{% endif %}
+		{% if playlist.owner == request.user %}
+		<a href="{% url 'music:playlist_delete' playlist.pk %}" class="btn btn-outline-danger">Delete Playlist</a>
+		{% endif %}
+	</div>
 </div>
 <hr>
 
 {% if playlist.songs.all %}
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>Title</th>
-                    <th>Artist</th>
-                    <th>Genre</th>
-                    <th>Duration</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for song in playlist.songs.all %}
-                <tr>
-                    <td>
-                        <a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none fw-bold">
-                            {{ song.title }}
-                        </a>
-                    </td>
-                    <td>{{ song.artist }}</td>
-                    <td>{{ song.genre }}</td>
-                    <td>{{ song.duration }}</td>
-                    <td>
-                        <a href="{% url 'music:remove_from_playlist' song.id playlist.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="table-responsive">
+	<table class="table table-striped table-hover align-middle text-center">
+		<thead class="table-dark">
+			<tr>
+				<th>Title</th>
+				<th>Artist</th>
+				<th>Genre</th>
+				<th>Duration</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for song in playlist.songs.all %}
+			<tr>
+				<td>
+					<a href="{% url 'music:song_detail' song.pk %}" class="text-decoration-none fw-bold">
+						{{ song.title }}
+					</a>
+				</td>
+				<td>{{ song.artist }}</td>
+				<td>{{ song.genre }}</td>
+				<td>{{ song.duration }}</td>
+				<td>
+					<a href="{% url 'music:remove_from_playlist' song.id playlist.id %}"
+						class="btn btn-sm btn-outline-danger">Remove</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
 {% else %}
-    <div class="alert alert-info">
-        This playlist is empty. Go to the catalog to add some songs!
-    </div>
-    <a href="{% url 'music:song_list' %}" class="btn btn-primary">Go to Catalog</a>
+<div class="alert alert-info">
+	This playlist is empty. Go to the catalog to add some songs!
+</div>
+<a href="{% url 'music:song_list' %}" class="btn btn-primary">Go to Catalog</a>
 {% endif %}
 {% endblock %}

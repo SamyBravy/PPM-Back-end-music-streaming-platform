@@ -3,7 +3,7 @@ import django
 from datetime import timedelta
 import random
 
-# Configura l'ambiente Django per poter eseguire script standalone
+# Configure Django environment to allow running standalone scripts
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.settings")
 django.setup()
 
@@ -16,10 +16,10 @@ from django.conf import settings
 User = get_user_model()
 
 def seed():
-    print("Inizio popolamento massivo del database...")
+    print("Starting massive database population...")
 
-    # 1. Accounts (creazione di svariati utenti con ruoli diversi)
-    print("-> Creazione account...")
+    # 1. Accounts (creation of various users with different roles)
+    print("-> Creating accounts...")
     users = {}
     
     # Staff / Curators / Moderators
@@ -58,27 +58,27 @@ def seed():
         user.save()
         users[username] = user
 
-    # 2. Amicizie
-    print("-> Configurazione sistema di amicizie e richieste...")
-    # Alice è amica di Bob e Charlie
+    # 2. Friendships
+    print("-> Configuring friendship system and requests...")
+    # Alice is friends with Bob and Charlie
     users['alice'].friends.add(users['bob'], users['charlie'])
-    # Dave invia richiesta ad Alice
+    # Dave sends a request to Alice
     FriendRequest.objects.get_or_create(sender=users['dave'], receiver=users['alice'])
-    # Eve invia richiesta ad Alice
+    # Eve sends a request to Alice
     FriendRequest.objects.get_or_create(sender=users['eve'], receiver=users['alice'])
-    # Alice invia richiesta a Frank
+    # Alice sends a request to Frank
     FriendRequest.objects.get_or_create(sender=users['alice'], receiver=users['frank'])
 
     # 3. Genres
-    print("-> Creazione generi musicali espansi...")
+    print("-> Creating expanded musical genres...")
     genres_data = ['Rock', 'Jazz', 'Pop', 'Electronic', 'Classical', 'Hip Hop', 'Indie', 'Metal', 'Lo-Fi']
     genres = {}
     for g in genres_data:
         genre, _ = Genre.objects.get_or_create(name=g, defaults={'description': f'Explore the best of {g}.'})
         genres[g] = genre
 
-    # 4. Songs (Molte più canzoni, alcune con audio collegato)
-    print("-> Creazione catalogo musicale...")
+    # 4. Songs (Many more songs, some with linked audio)
+    print("-> Creating music catalog...")
     songs_data = [
         {"title": "Stairway to Heaven", "artist": "Led Zeppelin", "genre": "Rock", "duration": (8, 2), "file": "songs/no_copyright (1).mp3"},
         {"title": "Bohemian Rhapsody", "artist": "Queen", "genre": "Rock", "duration": (5, 55), "file": "songs/no_copyright (2).mp3"},
@@ -122,7 +122,7 @@ def seed():
                     audio = MP3(file_path)
                     duration_delta = timedelta(seconds=int(audio.info.length))
             except Exception as e:
-                print(f"Errore lettura durata {data['file']}: {e}")
+                print(f"Error reading duration {data['file']}: {e}")
 
         song, _ = Song.objects.get_or_create(
             title=data['title'], 
@@ -135,15 +135,15 @@ def seed():
         )
         all_songs.append(song)
 
-    # 5. Mi Piace (Like alle canzoni da svariati utenti)
-    print("-> Simulazione dei Like sulle canzoni...")
+    # 5. Likes (Likes on songs from various users)
+    print("-> Simulating Likes on songs...")
     for song in all_songs:
-        # 0-5 likes casuali
+        # 0-5 random likes
         likers = random.sample(list(users.values()), k=random.randint(0, min(5, len(users))))
         song.likes.set(likers)
 
-    # 6. Playlists (Editoriali, Pubbliche e Private)
-    print("-> Creazione Playlist complesse...")
+    # 6. Playlists (Editorial, Public and Private)
+    print("-> Creating complex Playlists...")
     
     # Editorial Playlists
     pl1, _ = Playlist.objects.get_or_create(name="Top 10 Global", owner=users['curator_demo'], defaults={'is_public': True, 'is_editorial': True})
@@ -167,14 +167,14 @@ def seed():
     pl1.followers.add(users['alice'], users['bob'], users['charlie'])
     pl3.followers.add(users['bob'], users['charlie'])
 
-    # 7. Commenti (Thread di discussione profondi e Like sui commenti)
-    print("-> Creazione della canzone 'Perfetta' per la Demo...")
+    # 7. Comments (Deep discussion threads and Likes on comments)
+    print("-> Creating the 'Perfect' song for the Demo...")
     song_target = next(s for s in all_songs if s.title == "Bohemian Rhapsody")
     
-    # Record assoluto di Like: TUTTI gli utenti mettono Like a Bohemian Rhapsody
+    # Absolute Like record: ALL users Like Bohemian Rhapsody
     song_target.likes.set(users.values())
 
-    # Thread di discussione pazzesco
+    # Crazy discussion thread
     c1, _ = Comment.objects.get_or_create(song=song_target, author=users['alice'], text="This is literally the best song ever written. 👑")
     c1.likes.add(users['bob'], users['charlie'], users['curator_demo'], users['admin_demo'])
     
@@ -188,29 +188,29 @@ def seed():
 
     c_admin, _ = Comment.objects.get_or_create(song=song_target, author=users['admin_demo'], text="Welcome to the main hub of our project! Enjoy testing all the social features right here.")
     
-    # SPAM Comment da far cancellare al Moderatore in fase di Demo
+    # SPAM Comment to be deleted by the Moderator during the Demo
     Comment.objects.get_or_create(song=song_target, author=users['spambot'], text="FREE IPHONES!!! CLICK HERE -> http://spam-link.xyz/virus")
 
     song_target2 = next(s for s in all_songs if s.title == "Take Five")
     Comment.objects.get_or_create(song=song_target2, author=users['charlie'], text="That 5/4 time signature is so smooth.")
 
-    # Altre canzoni minori
+    # Other minor songs
 
-    # Thread su Lo-Fi
+    # Thread on Lo-Fi
     song_target4 = next(s for s in all_songs if s.title == "Chill Study Beats")
     c_lofi1, _ = Comment.objects.get_or_create(song=song_target4, author=users['eve'], text="Listening to this while coding, perfectly relaxing.")
     c_lofi1.likes.add(users['alice'], users['frank'])
     Comment.objects.get_or_create(song=song_target4, author=users['alice'], text="Me too! It really helps to focus.", parent=c_lofi1)
 
-    # Thread su Stairway to Heaven
+    # Thread on Stairway to Heaven
     song_target5 = next(s for s in all_songs if s.title == "Stairway to Heaven")
     c_stair, _ = Comment.objects.get_or_create(song=song_target5, author=users['mike_curates'], text="The guitar solo at the end is legendary.")
     Comment.objects.get_or_create(song=song_target5, author=users['john_mod'], text="Absolutely. Page is a genius.", parent=c_stair)
 
-    # Fine commenti
+    # End of comments
 
-    print("✅ Popolamento del database completato con successo!")
-    print("Ora puoi testare ruoli, amicizie, playlist private/pubbliche, audio player, e commenti annidati!")
+    print("✅ Database population successfully completed!")
+    print("You can now test roles, friendships, private/public playlists, audio player, and nested comments!")
 
 if __name__ == '__main__':
     seed()

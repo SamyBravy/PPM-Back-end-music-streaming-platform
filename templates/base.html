@@ -56,11 +56,13 @@
 					</li>
 					{% if user.is_superuser %}
 					<li class="nav-item d-lg-none">
-						<a class="nav-link text-danger fw-bold" href="{% url 'admin:index' %}" hx-boost="false">⚙️ Control Panel</a>
+						<a class="nav-link text-danger fw-bold" href="{% url 'admin:index' %}" hx-boost="false">Control
+							Panel</a>
 					</li>
 					<li class="nav-item me-2 d-none d-lg-block">
-						<a class="btn btn-sm btn-outline-danger mt-1" href="{% url 'admin:index' %}" title="Django Admin Dashboard" hx-boost="false">
-							⚙️ Control Panel
+						<a class="btn btn-sm btn-outline-danger mt-1" href="{% url 'admin:index' %}"
+							title="Django Admin Dashboard" hx-boost="false">
+							Control Panel
 						</a>
 					</li>
 					{% endif %}

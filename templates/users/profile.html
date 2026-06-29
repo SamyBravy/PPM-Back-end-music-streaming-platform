@@ -4,125 +4,127 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
+	<div class="col-md-8">
 
-        <div class="card neo-card mb-4">
-            <div class="card-header border-bottom bg-transparent d-flex justify-content-between align-items-center">
-                <h4 class="mb-0" style="color: var(--accent-tertiary);">Your Personal Profile</h4>
-            </div>
-            <div class="card-body p-4">
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-                    <h2 class="mb-0 text-break">
-                        {{ user.profile_icon }} {{ user.username }}
-                    </h2>
-                    <div>
-                    {% if user.is_superuser %}
-                        <span class="badge bg-danger fs-6">Admin</span>
-                    {% elif user.role == 'moderator' %}
-                        <span class="badge bg-success fs-6">Moderator</span>
-                    {% elif user.role == 'curator' %}
-                        <span class="badge bg-warning text-dark fs-6">Curator</span>
-                    {% else %}
-                        <span class="badge bg-info text-dark fs-6">Listener</span>
-                    {% endif %}
-                    </div>
-                </div>
-                
-                <ul class="list-group list-group-flush mb-4">
-                    {% if user.first_name or user.last_name %}
-                    <li class="list-group-item">
-                        <strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
-                    </li>
-                    {% endif %}
-                    {% if user.email %}
-                    <li class="list-group-item">
-                        <strong>Email:</strong> {{ user.email }}
-                    </li>
-                    {% endif %}
-                    {% if user.birth_date %}
-                    <li class="list-group-item">
-                        <strong>Date of Birth:</strong> {{ user.birth_date|date:"M d, Y" }}
-                    </li>
-                    {% endif %}
-                    <li class="list-group-item">
-                        <strong>Date Joined:</strong> {{ user.date_joined|date:"M d, Y" }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Last Login:</strong> {{ user.last_login|date:"M d, Y, H:i"|default:"Never" }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Playlists Created:</strong> {{ user.playlists.count }}
-                    </li>
-                </ul>
+		<div class="card neo-card mb-4">
+			<div class="card-header border-bottom bg-transparent d-flex justify-content-between align-items-center">
+				<h4 class="mb-0" style="color: var(--accent-tertiary);">Your Personal Profile</h4>
+			</div>
+			<div class="card-body p-4">
+				<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+					<h2 class="mb-0 text-break">
+						{{ user.profile_icon }} {{ user.username }}
+					</h2>
+					<div>
+						{% if user.is_superuser %}
+						<span class="badge bg-danger fs-6">Admin</span>
+						{% elif user.role == 'moderator' %}
+						<span class="badge bg-success fs-6">Moderator</span>
+						{% elif user.role == 'curator' %}
+						<span class="badge bg-warning text-dark fs-6">Curator</span>
+						{% else %}
+						<span class="badge bg-info text-dark fs-6">Listener</span>
+						{% endif %}
+					</div>
+				</div>
 
-                <div class="d-grid gap-2">
-                    <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">
-                        ✏️ Edit Personal Details
-                    </a>
-                    <a href="{% url 'users:public_profile' request.user.username %}" class="btn btn-outline-primary">
-                        View My Public Profile
-                    </a>
-                </div>
-            </div>
-        </div>
+				<ul class="list-group list-group-flush mb-4">
+					{% if user.first_name or user.last_name %}
+					<li class="list-group-item">
+						<strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}
+					</li>
+					{% endif %}
+					{% if user.email %}
+					<li class="list-group-item">
+						<strong>Email:</strong> {{ user.email }}
+					</li>
+					{% endif %}
+					{% if user.birth_date %}
+					<li class="list-group-item">
+						<strong>Date of Birth:</strong> {{ user.birth_date|date:"M d, Y" }}
+					</li>
+					{% endif %}
+					<li class="list-group-item">
+						<strong>Date Joined:</strong> {{ user.date_joined|date:"M d, Y" }}
+					</li>
+					<li class="list-group-item">
+						<strong>Last Login:</strong> {{ user.last_login|date:"M d, Y, H:i"|default:"Never" }}
+					</li>
+					<li class="list-group-item">
+						<strong>Playlists Created:</strong> {{ user.playlists.count }}
+					</li>
+				</ul>
 
-        {% if pending_requests %}
-        <div class="card neo-card mt-4 border-warning">
-            <div class="card-header bg-transparent border-bottom border-warning">
-                <h5 class="mb-0 text-warning">⏳ Friend Requests ({{ pending_requests.count }})</h5>
-            </div>
-            <ul class="list-group list-group-flush">
-                {% for req in pending_requests %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>
-                        <a href="{% url 'users:public_profile' req.sender.username %}" class="text-decoration-none fw-bold">@{{ req.sender.username }}</a> sent you a request
-                    </span>
-                    <div>
-                        <form action="{% url 'users:accept_request' req.id %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-success">Accept</button>
-                        </form>
-                        <form action="{% url 'users:reject_request' req.id %}" method="post" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
-                        </form>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+				<div class="d-grid gap-2">
+					<a href="{% url 'users:profile_edit' %}" class="btn btn-outline-secondary">
+						Edit Personal Details
+					</a>
+					<a href="{% url 'users:public_profile' request.user.username %}" class="btn btn-outline-primary">
+						View My Public Profile
+					</a>
+				</div>
+			</div>
+		</div>
 
-        <div class="card neo-card mt-4">
-            <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
-                <h5 class="mb-0" style="color: var(--accent-tertiary);">Your Friends ({{ friends_list.count }})</h5>
-            </div>
-            <div class="card-body">
-                <form action="{% url 'users:send_request_by_username' %}" method="post" class="mb-4">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent text-primary border-primary">@</span>
-                        <input type="text" name="username" class="form-control border-primary" placeholder="Enter exact username to add..." required>
-                        <button type="submit" class="btn btn-primary">Send Request</button>
-                    </div>
-                </form>
+		{% if pending_requests %}
+		<div class="card neo-card mt-4 border-warning">
+			<div class="card-header bg-transparent border-bottom border-warning">
+				<h5 class="mb-0 text-warning">⏳ Friend Requests ({{ pending_requests.count }})</h5>
+			</div>
+			<ul class="list-group list-group-flush">
+				{% for req in pending_requests %}
+				<li class="list-group-item d-flex justify-content-between align-items-center">
+					<span>
+						<a href="{% url 'users:public_profile' req.sender.username %}"
+							class="text-decoration-none fw-bold">@{{ req.sender.username }}</a> sent you a request
+					</span>
+					<div>
+						<form action="{% url 'users:accept_request' req.id %}" method="post" class="d-inline">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-sm btn-success">Accept</button>
+						</form>
+						<form action="{% url 'users:reject_request' req.id %}" method="post" class="d-inline">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-sm btn-danger">Reject</button>
+						</form>
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
 
-                <hr class="my-4">
+		<div class="card neo-card mt-4">
+			<div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+				<h5 class="mb-0" style="color: var(--accent-tertiary);">Your Friends ({{ friends_list.count }})</h5>
+			</div>
+			<div class="card-body">
+				<form action="{% url 'users:send_request_by_username' %}" method="post" class="mb-4">
+					{% csrf_token %}
+					<div class="input-group">
+						<span class="input-group-text bg-transparent text-primary border-primary">@</span>
+						<input type="text" name="username" class="form-control border-primary"
+							placeholder="Enter exact username to add..." required>
+						<button type="submit" class="btn btn-primary">Send Request</button>
+					</div>
+				</form>
 
-                {% if friends_list %}
-                    <div class="d-flex flex-wrap gap-2">
-                        {% for friend in friends_list %}
-                            <a href="{% url 'users:public_profile' friend.username %}" class="btn btn-outline-dark btn-sm">
-                                @{{ friend.username }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-muted mb-0">You don't have any friends yet</p>
-                {% endif %}
-            </div>
-        </div>
+				<hr class="my-4">
 
-    </div>
+				{% if friends_list %}
+				<div class="d-flex flex-wrap gap-2">
+					{% for friend in friends_list %}
+					<a href="{% url 'users:public_profile' friend.username %}" class="btn btn-outline-dark btn-sm">
+						@{{ friend.username }}
+					</a>
+					{% endfor %}
+				</div>
+				{% else %}
+				<p class="text-muted mb-0">You don't have any friends yet</p>
+				{% endif %}
+			</div>
+		</div>
+
+	</div>
 </div>
 {% endblock %}

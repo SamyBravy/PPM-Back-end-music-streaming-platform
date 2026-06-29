@@ -35,7 +35,7 @@
                             <form action="{% url 'users:remove_friend' target_user.username %}" method="post" class="d-inline">
                                 {% csrf_token %}
                                 <button class="btn btn-success" disabled>Friends</button>
-                                <button type="submit" class="btn btn-outline-danger ms-2" onclick="return confirm('Are you sure you want to remove {{ target_user.username }} from your friends?');">❌ Remove Friend</button>
+                                <button type="submit" class="btn btn-outline-danger ms-2" onclick="return confirm('Are you sure you want to remove {{ target_user.username }} from your friends?');">Remove Friend</button>
                             </form>
                         {% elif request_sent %}
                             <button class="btn btn-secondary" disabled>Request Sent</button>

@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     # App di terze parti
     'crispy_forms',
     'crispy_bootstrap5',
-    'corsheaders',
     # App locali
     'users',
     'music',
@@ -49,7 +48,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -151,7 +149,6 @@ LOGOUT_REDIRECT_URL = 'pages:home'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-# CORS (sviluppo locale)
-CORS_ALLOW_ALL_ORIGINS = True
+
 
 

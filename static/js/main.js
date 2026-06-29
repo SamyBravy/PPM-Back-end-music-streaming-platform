@@ -63,3 +63,20 @@ function closeGlobalPlayer() {
     }
     if (container) container.style.display = 'none';
 }
+
+htmx.config.scrollIntoViewOnBoost = false;
+
+document.body.addEventListener('htmx:afterSettle', function(evt) {
+    let oldPath = sessionStorage.getItem('lastPath');
+    let currentPath = window.location.pathname;
+    
+    if (oldPath && oldPath !== currentPath) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    
+    sessionStorage.setItem('lastPath', currentPath);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    sessionStorage.setItem('lastPath', window.location.pathname);
+});

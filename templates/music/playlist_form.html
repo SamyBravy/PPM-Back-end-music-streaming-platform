@@ -11,7 +11,7 @@
 		<div class="card neo-card">
 			<div class="card-body p-4">
 				<h2 class="card-title mb-4" style="color: var(--accent-tertiary);">
-					{% if object %}✏️ Edit Playlist{% else %}Create New Playlist{% endif %}
+					{% if object %}Edit Playlist{% else %}Create New Playlist{% endif %}
 				</h2>
 				<form method="post">
 					{% csrf_token %}
@@ -24,27 +24,25 @@
 						<label class="form-label fw-semibold">Visibility</label>
 						<div class="visibility-picker" role="radiogroup" aria-label="Playlist visibility">
 							{% for value, label in form.visibility.field.choices %}
-								<label class="visibility-picker-option">
-									<input
-										class="visibility-picker-input"
-										type="radio"
-										name="{{ form.visibility.html_name }}"
-										value="{{ value }}"
-										{% if form.visibility.value == value or form.visibility.field.initial == value %}checked{% endif %}
-									>
-									<span>{{ label }}</span>
-								</label>
+							<label class="visibility-picker-option">
+								<input class="visibility-picker-input" type="radio"
+									name="{{ form.visibility.html_name }}" value="{{ value }}" {% if
+									form.visibility.value==value or form.visibility.field.initial==value %}checked{%
+									endif %}>
+								<span>{{ label }}</span>
+							</label>
 							{% endfor %}
 						</div>
 						{% if form.visibility.errors %}
-							<div class="invalid-feedback d-block">{{ form.visibility.errors|striptags }}</div>
+						<div class="invalid-feedback d-block">{{ form.visibility.errors|striptags }}</div>
 						{% endif %}
 					</div>
 					<div class="mt-3">
 						<button type="submit" class="btn btn-primary">
 							{% if object %}Save Changes{% else %}Create Playlist{% endif %}
 						</button>
-						<a href="{% if next_url %}{{ next_url }}{% else %}{% url 'music:playlist_list' %}{% endif %}" class="btn btn-outline-secondary ms-2">
+						<a href="{% if next_url %}{{ next_url }}{% else %}{% url 'music:playlist_list' %}{% endif %}"
+							class="btn btn-outline-secondary ms-2">
 							Cancel
 						</a>
 					</div>

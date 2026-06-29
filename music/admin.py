@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Genre, Song, Playlist
+from .models import Genre, Song, Playlist, Comment
 
 
 @admin.register(Genre)
@@ -22,3 +22,9 @@ class PlaylistAdmin(admin.ModelAdmin):
     list_filter = ['owner']
     search_fields = ['name']
     filter_horizontal = ['songs']
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['author', 'song', 'created_at', 'text']
+    list_filter = ['created_at', 'author']
+    search_fields = ['text', 'author__username']

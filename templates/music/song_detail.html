@@ -66,7 +66,7 @@
 
 					{% if user.role == 'curator' or user.is_superuser %}
 					<a href="{% url 'music:song_update' song.pk %}?next={{ request.path }}" class="btn btn-outline-secondary d-flex align-items-center gap-2 shadow-sm py-2 ms-sm-auto mt-2 mt-sm-0 text-nowrap flex-shrink-0">
-						<span class="fs-6">✏️</span> <span class="fs-6">Edit</span>
+						<span class="fs-6">Edit</span>
 					</a>
 					{% endif %}
 				</div>

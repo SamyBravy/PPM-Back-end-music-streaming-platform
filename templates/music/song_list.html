@@ -78,8 +78,8 @@
                             <a href="{% url 'music:toggle_like_song' song.pk %}" class="btn btn-sm text-decoration-none p-0 me-2 fs-5" title="Like">
                                 {% if user in song.likes.all %}❤️{% else %}🤍{% endif %}
                             </a>
-                            <div class="dropdown d-inline">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-display="static">
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                     Add to...
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end text-center">
