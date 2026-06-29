@@ -14,9 +14,11 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         ('Custom User Info', {'fields': ('role', 'birth_date', 'profile_icon', 'friends')}),
     )
-    
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Custom User Info', {'fields': ('role', 'birth_date', 'profile_icon')}),
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2'),
+        }),
     )
 
 @admin.register(FriendRequest)
